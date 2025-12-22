@@ -1,0 +1,29 @@
+/frontend_basic_setup/.angular/
+/frontend_basic_setup/node_modules/
+/backend_api/test_data/
+
+
+# .net files and visual studio settins
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.VC.db
+*.VC.VC.opendb
+_ReSharper*/
+*.DotSettings.user
+
+
+
+# Build output files
+**/bin/
+*.bin
+**/obj/
+
+
+backend_api/packages/*.nupkg
+*.snupkg
+*.sln.iml
+
+/backend_api/expense_tracker/expense_tracker.http
