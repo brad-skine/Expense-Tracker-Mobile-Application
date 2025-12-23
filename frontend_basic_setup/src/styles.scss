@@ -1,0 +1,25 @@
+/* You can add global styles to this file, and also import other style files */
+* {
+  margin: 0;
+  padding: 0;}
+:root {
+  --primary-color: skyblue;
+  --secondary-color: #191792;
+  --accent-color: #e8e7fa;
+  --shadow-color: #E8E8E8;
+}
+html {
+  font-size: 17px;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  min-height: 100vh;
+  background: linear-gradient(
+    135deg,
+    #0f172a, 
+    #020617    
+  );
+  color: var(--secondary-color); 
+}
+
