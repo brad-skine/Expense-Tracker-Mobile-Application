@@ -18,7 +18,7 @@ namespace expense_tracker.Controllers
         [HttpGet("all")]
         public async Task<IActionResult> GetAllTransactionsAsync()
         {
-            var transactions = await _service.GetAllTransactionsAsync();
+            var transactions = await _service.GetAllTansactionsAsync();
           
             return Ok(transactions);
         }

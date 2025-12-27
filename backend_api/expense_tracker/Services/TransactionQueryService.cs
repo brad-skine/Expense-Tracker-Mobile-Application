@@ -22,9 +22,18 @@ namespace expense_tracker.Services
             return new Npgsql.NpgsqlConnection(_connectionString);
         }
 
-        public async Task<IEnumerable<Transaction>> GetAllTransactionsAsync()
+        public async Task<IEnumerable<Transaction>> GetAllTansactionsAsync()
         {
-            const string sql = "SELECT * FROM transactions ORDER BY transaction_date DESC;";
+
+            const string sql = """
+                SELECT 
+                transaction_date AS Date,
+                transaction_type AS TransactionType,
+                description,
+                amount,
+                balance
+                FROM transactions
+                """;
             using var conn = GetConnection();
             return await conn.QueryAsync<Transaction>(sql);
         }

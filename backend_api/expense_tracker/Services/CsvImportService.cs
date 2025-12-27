@@ -1,33 +1,36 @@
-﻿using Npgsql;
+﻿using CsvHelper;
+using Npgsql;
 using System.Globalization;
 
 namespace expense_tracker.Services
 {
-    public class CsvImportService
+    public class CsvImportService(IConfiguration configuration)
     {
-        private readonly string _connectionString;
-        private readonly ILogger<CsvImportService> _logger;
-        public CsvImportService(IConfiguration configuration,
-            ILogger<CsvImportService> logger)
-        {
-            _connectionString = configuration.GetConnectionString("localConnection") ?? 
+        private readonly string _connectionString = configuration.GetConnectionString("localConnection") ??
                 throw new InvalidOperationException("Connection string 'localConnection' not found.");
-            _logger = logger;
-        }
 
 
-        public async Task<Models.ImportResult> ImportTransactionsAsync(Stream csvStream) 
+        public async Task<Models.ImportResult> ImportTransactionsAsync(Stream csvStream)
         {
-          
+
             using var reader = new StreamReader(csvStream);
-            using var csv = new CsvHelper.CsvReader(reader, CultureInfo.InvariantCulture);
+
+            var config = new CsvHelper.Configuration.CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                PrepareHeaderForMatch = args => args.Header.Trim().ToLower(), 
+                MissingFieldFound = null // optional: ignore missing columns
+            };
+
+            using var csv = new CsvHelper.CsvReader(reader, config);
 
             var records = csv.GetRecords<Models.transactionCsv>().ToList();
             using var connection = new Npgsql.NpgsqlConnection(_connectionString);
 
             await connection.OpenAsync(); // Open the database connection
             int inserted = 0; // Counter for inserted records
-            int skipped = 0; // Counter for skipped records
+            int skipped = 0; // Counter for skipped records might not use as slow
+
+
             foreach (var csvTransaction in records)
             {
                 var transaction = new Models.Transaction
@@ -44,14 +47,14 @@ namespace expense_tracker.Services
                     INSERT INTO transactions
                         (transaction_date, transaction_type, description, amount, balance)
                     VALUES
-                        (@date, @t_type, @description, @amount, @balance)
+                        (@date, @transaction_type, @description, @amount, @balance)
                     ON CONFLICT (transaction_date, amount, balance)
                     DO NOTHING;
                     """,
                      connection
                  );
                 command.Parameters.AddWithValue("date", transaction.Date.ToDateTime(new TimeOnly(0, 0)));
-                command.Parameters.AddWithValue("t_type", transaction.TransactionType);
+                command.Parameters.AddWithValue("transaction_type", transaction.TransactionType);
                 command.Parameters.AddWithValue("description", transaction.Description);
                 command.Parameters.AddWithValue("amount", transaction.Amount);
                 command.Parameters.AddWithValue("balance", transaction.Balance);
@@ -67,16 +70,7 @@ namespace expense_tracker.Services
                    
             }
 
-            if (inserted == 0)
-            {
-                _logger.LogWarning("No new records were inserted from the CSV import.");
-            } else
-            {
-                _logger.LogInformation(
-                    "CSV import completed. Inserted: {Inserted}, Skipped: {Skipped}",
-                    inserted, skipped);
-            }
-              
+               
             return new Models.ImportResult
             {
                 Inserted = inserted,

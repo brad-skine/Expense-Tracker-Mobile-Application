@@ -1,19 +1,10 @@
 <div class="expense-list">
 
-  @if (loading == true && !error)  {
-    <p>Loading expenses ....</p>
-  }  
-  
-@else if (error) {
-    <p class="error">{{ error }}</p>
-  } 
-  
-@else {   <!-- if (!loading && !error) { -->
-    <!-- console.log("Displaying transactions:", transactions); -->
-    @for (transaction of transactions; track transaction) {
+  @if (transactions$ | async; as transactions){
+    @for (transaction of transactions; track transaction.id) {
       <div class="expense-item">
         <div>
-          <strong>{{ transaction.description }}</strong>
+          <strong>{{ transaction.transactionType }}</strong>
           <div class="category">
             {{ transaction.transactionType }}
           </div>
@@ -23,6 +14,8 @@
         </div>
       </div>
     }
-  }
+  } @else {
+      <p>Loading expenses ....</p>
+    }
 
 </div>
