@@ -31,7 +31,7 @@ namespace expense_tracker.Services
             int skipped = 0; // Counter for skipped records might not use as slow
 
 
-            foreach (var csvTransaction in records)
+           foreach (var csvTransaction in records)
             {
                 var transaction = new Models.Transaction
                 {
@@ -70,7 +70,6 @@ namespace expense_tracker.Services
                    
             }
 
-               
             return new Models.ImportResult
             {
                 Inserted = inserted,
