@@ -40,7 +40,6 @@ echarts.use([
 
 export class TypePieChartComponent  {
   private typeSummaryService = inject(TypeSummaryService); 
-  loading = true;
   error: string | null = null; // so can check if error then display it
 
    typeSummaries = toSignal(this.typeSummaryService.getAllTypeSummaries(

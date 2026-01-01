@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { TransactionModel } from 'src/app/models/transaction.model';
 import { TransactionService } from 'src/app/services/transaction.service';
 import { Observable } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 
 @Component({
@@ -15,9 +16,9 @@ import { Observable } from 'rxjs';
 
 
 export class TransactionListComponent  {
-  transactions: TransactionModel[] = [];
+  // transactions: TransactionModel[] = [];
   private transactionService = inject(TransactionService); 
-  loading = true;
-  error: string | null = null; // so can check if error then display it
-  transactions$: Observable<TransactionModel[]> = this.transactionService.getAllTransactions();
+
+  transactions = toSignal(this.transactionService.getAllTransactions(), {initialValue: []});
+
 }

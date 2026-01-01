@@ -1,8 +1,6 @@
-<div class="sale_chart_container">
-  @if (chartOptions(); as opts) {
-      <div class="monthlyChart" echarts [options]="opts"></div>
-  } @else {
-    <p class="loading">Loading sales...</p>
-  }
 
-</div>
+  @if (chartOptions(); as opts) {
+    <div class="sale_chart_container">
+      <div class="monthlyChart" echarts [options]="opts"></div>
+      </div>
+  } 

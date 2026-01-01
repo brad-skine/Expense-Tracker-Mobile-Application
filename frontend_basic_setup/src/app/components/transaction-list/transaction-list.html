@@ -1,23 +1,22 @@
 <div class="expense-list">
 
-  @if (transactions$ | async; as transactions){
-    @for (transaction of transactions; track transaction.id) {
-      <div class="expense-item"
-      [class.expense-negative]="transaction.amount < 0"
-        [class.expense-positive]="transaction.amount >= 0">
-        <div>
-          <strong class = "description">{{ transaction.description }}</strong>
-          <div class="category">
-            {{ transaction.transactionType }}
-          </div>
-        </div>
-        <div class="amount">
-          ${{ transaction.amount | number:'1.2-2' }}
+
+  @for (transaction of transactions(); track transaction.id) {
+    <div class="expense-item"
+    [class.expense-negative]="transaction.amount < 0"
+      [class.expense-positive]="transaction.amount >= 0">
+      <div>
+        <strong class = "description">{{ transaction.description }}</strong>
+        <div class="category">
+          {{ transaction.transactionType }}
         </div>
       </div>
-    }
-  } @else {
-      <p>Loading expenses ....</p>
-    }
+      <div class="amount">
+        ${{ transaction.amount | number:'1.2-2' }}
+      </div>
+    </div>
+  } @empty {
+    <p>No expenses loaded yet</p>
+  }
 
 </div>

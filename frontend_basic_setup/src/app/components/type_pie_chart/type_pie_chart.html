@@ -1,8 +1,5 @@
-<div class="type_summar_container">
   @if (chartOptions(); as opts) {
+     <div class="type_summer_container">
       <div class="type_pie_graph" echarts [options]="opts"></div>
-  } @else {
-    <p class="loading">Loading type summary data...</p>
+    </div>
   }
-
-</div>

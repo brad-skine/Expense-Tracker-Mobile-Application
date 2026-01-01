@@ -44,15 +44,16 @@ echarts.use([
 export class MonthlyChartComponent{
 
   protected monthlySalesService = inject(monthlySalesService); 
-  loading = true;
+  // loading = false;
   error: string | null = null; // so can check if error then display it
 
    monthlySales = toSignal(this.monthlySalesService.getAllMonthlySales(
-    ), {initialValue: []});
+    ), {initialValue: null});
 
+    
   chartOptions = computed(() => {
       const data = this.monthlySales();
-      if (!data.length) return null;
+      if (!data || !data.length) return null;
 
       return {
         textStyle: {
