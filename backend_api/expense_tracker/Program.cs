@@ -8,16 +8,23 @@ builder.Services.AddScoped<expense_tracker.Services.CsvImportService>();
 builder.Services.AddScoped<expense_tracker.Services.TransactionQueryService>();
 
 builder.Logging.ClearProviders();
-builder.Logging.AddConsole(); 
+builder.Logging.AddConsole();
+
+var allowedOrigins = builder.Configuration
+    .GetSection("Cors:AllowedOrigins")
+    .Get<string[]>();
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngular",
         policy =>
         {
-            policy.WithOrigins("http://localhost:4200")
+            policy
+                   //WithOrigins(allowedOrigins)  # after I setup angular hosting
+                  .SetIsOriginAllowed(_to => true)
                   .AllowAnyHeader()
                   .AllowAnyMethod(); 
+                  
         });
 });
 

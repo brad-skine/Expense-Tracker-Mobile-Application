@@ -13,8 +13,8 @@ namespace expense_tracker.Services
 
         public TransactionQueryService(IConfiguration configuration)
         {
-            _connectionString = configuration.GetConnectionString("localConnection") ??
-                throw new InvalidOperationException("Connection string 'localConnection' not found.");
+            _connectionString = configuration.GetConnectionString("DefaultConnection") ??
+                throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
         }
 
         private Npgsql.NpgsqlConnection GetConnection()

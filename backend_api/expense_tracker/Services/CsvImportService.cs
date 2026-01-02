@@ -6,8 +6,8 @@ namespace expense_tracker.Services
 {
     public class CsvImportService(IConfiguration configuration)
     {
-        private readonly string _connectionString = configuration.GetConnectionString("localConnection") ??
-                throw new InvalidOperationException("Connection string 'localConnection' not found.");
+        private readonly string _connectionString = configuration.GetConnectionString("DefaultConnection") ??
+                throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 
         public async Task<int> ImportTransactionsAsync(Stream csvStream)
