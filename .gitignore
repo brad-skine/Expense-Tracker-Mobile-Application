@@ -2,6 +2,7 @@
 /frontend_basic_setup/node_modules/
 /backend_api/test_data/
 
+/frontend_basic_setup/dist/
 
 # .net files and visual studio settins
 .vs/

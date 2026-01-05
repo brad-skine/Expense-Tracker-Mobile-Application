@@ -41,7 +41,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "outputPath": "dist/first-app",
+            "outputPath": "dist/app-v0.1",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": ["zone.js"],
