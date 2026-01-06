@@ -3,7 +3,7 @@
 /backend_api/test_data/
 
 /frontend_basic_setup/dist/
-
+/frontend_basic_setup/android/
 # .net files and visual studio settins
 .vs/
 *.suo
