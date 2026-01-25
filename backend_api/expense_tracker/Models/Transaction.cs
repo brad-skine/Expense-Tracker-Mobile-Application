@@ -1,8 +1,12 @@
-﻿namespace expense_tracker.Models
+﻿using System.Text.Json.Serialization;
+
+namespace expense_tracker.Models
 {
     public class Transaction 
     {
         public int Id { get; set; }
+        
+        [JsonIgnore]
         public Guid UserId { get; set; }
         public DateOnly Date { get; set; }
         public string TransactionType { get; set; } = "";

@@ -1,5 +1,6 @@
 ﻿using expense_tracker.Models;
 using expense_tracker.Services.Interfaces;
+using expense_tracker.Utils.CustomExceptions;
 // using Microsoft.AspNetCore.Authorization;
 // using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -20,8 +21,13 @@ namespace expense_tracker.Controllers
                 await _authService.RegisterAsync(request.Email, request.Password);
                 return Ok();
             }
-            catch ("User already exists") {
-                return Exception("sldkjfs");
+            catch (UserAlreadyExistsException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { message = "Something went wrong" });
             }
         }
 

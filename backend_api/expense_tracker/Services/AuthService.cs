@@ -1,6 +1,8 @@
 ﻿using Dapper;
 using expense_tracker.Models;
 using expense_tracker.Services.Interfaces;
+using expense_tracker.Utils.CustomExceptions;
+
 namespace expense_tracker.Services
 {
 
@@ -34,7 +36,7 @@ namespace expense_tracker.Services
                 checkSql, new {Email= email});
 
             if (exist) {
-                throw new Exception("User already exists");
+                throw new UserAlreadyExistsException();
             }
             var hash = BCrypt.Net.BCrypt.HashPassword(password);
 

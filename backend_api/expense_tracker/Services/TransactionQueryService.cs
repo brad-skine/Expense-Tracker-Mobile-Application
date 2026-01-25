@@ -26,17 +26,18 @@ namespace expense_tracker.Services
         public async Task<IEnumerable<Transaction>> GetAllTansactionsAsync(Guid userId)
         {
 
-            const string sql = """
-                SELECT 
-                id,
-                transaction_date AS Date,
-                transaction_type AS TransactionType,
-                description,
-                amount,
-                balance
-                FROM transactions
-                WHERE user_id = @UserId
-                """;
+            const string sql = $"""
+                                SELECT 
+                                id,
+                                --user_id AS UserId,
+                                transaction_date AS Date,
+                                transaction_type AS TransactionType,
+                                description,
+                                amount,
+                                balance
+                                FROM transactions
+                                WHERE user_id = @UserId
+                                """;
             using var conn = GetConnection();
             return await conn.QueryAsync<Transaction>(sql, new {UserId= userId});
         }
