@@ -18,6 +18,8 @@
 
   <ItemGroup>
     <Folder Include="Properties\PublishProfiles\" />
+    <Folder Include="Utils\CustomExceptions\" />
+    <Folder Include="Utils\Parsers\" />
   </ItemGroup>
 
 </Project>

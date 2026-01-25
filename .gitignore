@@ -15,7 +15,7 @@
 _ReSharper*/
 *.DotSettings.user
 
-
+/backend_api/expense_tracker/Utils/Keys/
 
 # Build output files
 **/bin/

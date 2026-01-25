@@ -5,8 +5,9 @@ namespace expense_tracker.Services
 {
 
     public class AuthService(IConfiguration configuration,
-        Services.TokenService tokenService) : IAuthService
-    {
+        ITokenService tokenService) : IAuthService
+    {   
+        
         private readonly string _connectionString = configuration.GetConnectionString("DefaultConnection") ??
                 throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
@@ -28,7 +29,7 @@ namespace expense_tracker.Services
                 VALUES (@Id, @Email, @PasswordHash)
                 """;
                 
-            using var conn = GetConnection();
+            await using var conn = GetConnection();
             var exist = await conn.ExecuteScalarAsync<bool>(
                 checkSql, new {Email= email});
 
@@ -49,22 +50,25 @@ namespace expense_tracker.Services
 
         public async Task<string> LoginAsync(string email, string password)
         {
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+            {
+                throw new UnauthorizedAccessException();
+            }
             const string sql = """
-                SELECT id, email, password_hash 
+                SELECT id, email, password_hash AS PasswordHash
                 FROM users
                 WHERE email = @Email
 
                 """;
-            using var conn = GetConnection();
+            await using var conn = GetConnection();
 
             var user = await conn.QuerySingleOrDefaultAsync<User>(
                 sql, new { Email = email });
-
-            if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash)) {
+            if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash) ) {
                 throw new UnauthorizedAccessException();
             }
 
-            //toekn time
+            //token time
             return tokenService.GenerateToken(user); 
 
         }
