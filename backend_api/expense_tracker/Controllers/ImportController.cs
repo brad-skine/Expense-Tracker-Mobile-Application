@@ -9,17 +9,11 @@ namespace expense_tracker.Controllers
     [ApiController]
     [Route("api/import")] 
     
-    public class ImportController : ControllerBase 
+    public class ImportController(Services.CsvImportService csvImportService) : ControllerBase
     {
-        private readonly Services.CsvImportService _csvImportService;
         private Guid GetUserId()
         {
             return Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        }
-
-        public ImportController(Services.CsvImportService csvImportService)
-        {
-            _csvImportService = csvImportService;
         }
 
         [HttpPost("transactions")]
@@ -36,11 +30,11 @@ namespace expense_tracker.Controllers
             }
 
             var userId = GetUserId();
-            using var stream = file.OpenReadStream();
-            var row_count = await _csvImportService.ImportTransactionsAsync(stream, userId);
+            await using var stream = file.OpenReadStream();
+            var rowCount = await csvImportService.ImportTransactionsAsync(stream, userId);
             return Ok(new { 
                 message = "Import successful and data loaded into database",
-                inserted = row_count
+                inserted = rowCount
             });
         }
     }

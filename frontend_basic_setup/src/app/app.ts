@@ -1,13 +1,11 @@
 import {Component} from '@angular/core';
-import { TransactionListComponent } from './components/transaction-list/transaction-list';
-import { MonthlyChartComponent } from "./components/monthly-chart/monthly-chart";
-import { ImportButtonComponent } from "./components/import_data/import_data";
-import { TypePieChartComponent } from "./components/type_pie_chart/type_pie_chart";
+
+import {RouterOutlet} from "@angular/router";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [TransactionListComponent, MonthlyChartComponent, ImportButtonComponent, TypePieChartComponent],
+  imports: [RouterOutlet],
   templateUrl: "./app.html",
   styleUrls: ['./app.scss'],
 })
