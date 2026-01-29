@@ -1,1 +1,33 @@
-<h1> login please</h1>
+<main>
+<form (submit)="onSubmit()">
+
+    <h1>Sign In</h1>
+    <div class= "login">
+        <label>
+            Email
+            <input type="email" [field]="loginForm.email" />
+        </label>
+        <div class = "error_space">
+        @if (loginForm.email().touched() && loginForm.email().invalid()) {
+            <span class="error">
+            {{ loginForm.email().errors()[0].message }}
+          </span>
+        }
+        </div>
+    </div>
+    <div>
+        <label>
+            Password
+            <input type="password" [field]="loginForm.password" />
+        </label>
+        <div class = "error_space">
+            @if (loginForm.password().touched() && loginForm.password().invalid()) {
+                <span class="error">
+                {{ loginForm.password().errors()[0].message }}
+              </span>
+            }
+        </div>
+    </div>
+    <button type="submit" [disabled]="loginForm().invalid()">Sign In</button>
+</form>
+</main>

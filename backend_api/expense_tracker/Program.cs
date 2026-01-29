@@ -21,11 +21,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddScoped<expense_tracker.Services.CsvImportService>();
-builder.Services.AddScoped<expense_tracker.Services.TransactionQueryService>();
-
-builder.Services.AddScoped<expense_tracker.Services.AuthService>();
-builder.Services.AddScoped<expense_tracker.Services.TokenService>();
+// builder.Services.AddScoped<expense_tracker.Services.CsvImportService>();
+// builder.Services.AddScoped<expense_tracker.Services.TransactionQueryService>();
+//
+// builder.Services.AddScoped<expense_tracker.Services.AuthService>();
+// builder.Services.AddScoped<expense_tracker.Services.TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 //builder.Services.AddOpenApi(); maybe for later versions
@@ -47,7 +47,7 @@ builder.Services.AddCors(options =>
         policy =>
         {
             policy
-                   //WithOrigins(allowedOrigins)  # after I setup angular hosting
+                   //WithOrigins(allowedOrigins)  # after I set up angular hosting
                   .SetIsOriginAllowed(to => true)
                   .AllowAnyHeader()
                   .AllowAnyMethod(); 

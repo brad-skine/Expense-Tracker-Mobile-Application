@@ -18,8 +18,9 @@ namespace expense_tracker.Controllers
         {
             try
             {
-                await _authService.RegisterAsync(request.Email, request.Password);
-                return Ok();
+                var token= await _authService.RegisterAsync(request.Email, request.Password);
+                
+                return Ok( new {token});
             }
             catch (UserAlreadyExistsException ex)
             {

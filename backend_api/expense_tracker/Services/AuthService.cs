@@ -18,7 +18,7 @@ namespace expense_tracker.Services
             return new Npgsql.NpgsqlConnection(_connectionString);
         }
 
-        public async Task RegisterAsync(string email, string password)
+        public async Task<string> RegisterAsync(string email, string password)
         {
             const string checkSql = """
                 SELECT COUNT(1)
@@ -40,13 +40,23 @@ namespace expense_tracker.Services
             }
             var hash = BCrypt.Net.BCrypt.HashPassword(password);
 
+
+            var userId = Guid.NewGuid();
             await conn.ExecuteAsync(insertSql, new
             {
-                ID = Guid.NewGuid(),
+                ID = userId,
                 Email = email,
                 PasswordHash = hash
             });
+            
+            var user = new User
+            {
+                Id = userId,
+                Email = email,
+                PasswordHash = hash
+            };
 
+            return tokenService.GenerateToken(user);
         }
 
 

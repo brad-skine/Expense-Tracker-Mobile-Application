@@ -3,17 +3,33 @@
   margin: 0;
   padding: 0;}
 :root {
+
+
+  --hue: 225;
+  --sat: 20%;
+  --bg-darkest: hsl(var(--hue), var(--sat), 8%);   /* app background (darkest) */
+  --bg-main-survaces: hsl(var(--hue), var(--sat), 12%);  /* main surfaces */
+  --bg-elevated: hsl(var(--hue), var(--sat), 16%);  /* elevated / cards */
+  --primary: hsl(var(--hue), 80%, 60%);
+  --primary-hover: hsl(var(--hue), 80%, 65%);
+  --accent-700: hsl(var(--hue), 45%, 22%);
+  --accent-600: hsl(var(--hue), 55%, 28%);
+  --text-100: hsl(var(--hue), 20%, 95%); /* main text */
+  --text-200: hsl(var(--hue), 15%, 75%); /* secondary text */
+  --text-300: hsl(var(--hue), 10%, 55%); /* muted */
+  --text-error: red;
+  //TODO color theme with hsl
   --primary-color: skyblue;
   --secondary-color: #4846f3;
   --accent-color: #e8e7fa;
   --shadow-color: #E8E8E8;
   --background-color: #3f7fff23;
+  --dimmer-bg-color: hsl(240, 3%, 15%);
 }
 html {
   font-size: 17px;
   // -ms-overflow-style: none;
   // scrollbar-width: none;
-  scroll-snap-type: mandatory;
 }
 
 body {
