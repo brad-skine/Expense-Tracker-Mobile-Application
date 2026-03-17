@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TransactionModel } from 'src/app/models/transaction.model';
-import { TransactionService } from 'src/app/services/transaction.service';
+import { TransactionService } from 'src/app/components/transaction-list/transaction.service';
 import { Observable } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
 

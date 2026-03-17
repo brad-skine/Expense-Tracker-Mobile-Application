@@ -1,11 +1,10 @@
 import { Component, computed, inject } from '@angular/core';
-import { monthlySalesService } from 'src/app/services/monthly_sales.service';
+import { monthlySalesService } from 'src/app/components/monthly-chart/monthly_sales.service';
 import { CommonModule} from '@angular/common';
 import { NgxEchartsDirective, provideEchartsCore} from 'ngx-echarts';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 import * as echarts from 'echarts/core';
-// import necessary echarts components
 import { BarChart } from 'echarts/charts';
 import {
   TitleComponent,
@@ -19,6 +18,7 @@ import {
 } from 'echarts/components';
 
 import { CanvasRenderer } from 'echarts/renderers';
+import {MonthlySalesModel} from "../../models/monthly_sale.model";
 echarts.use([
   BarChart,
   TitleComponent,
@@ -48,12 +48,12 @@ export class MonthlyChartComponent{
   error: string | null = null; // so can check if error then display it
 
    monthlySales = toSignal(this.monthlySalesService.getAllMonthlySales(
-    ), {initialValue: null});
+    ), {initialValue: [] as MonthlySalesModel[]});
 
     
   chartOptions = computed(() => {
       const data = this.monthlySales();
-      if (!data || !data.length) return null;
+      if (!data.length) return null;
 
       return {
         textStyle: {
