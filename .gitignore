@@ -23,6 +23,10 @@ _ReSharper*/
 **/obj/
 
 
+**/Keys
+
+**\.idea
+
 backend_api/packages/*.nupkg
 *.snupkg
 *.sln.iml
