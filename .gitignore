@@ -22,7 +22,7 @@ _ReSharper*/
 *.bin
 **/obj/
 
-
+**.idea
 backend_api/packages/*.nupkg
 *.snupkg
 *.sln.iml
