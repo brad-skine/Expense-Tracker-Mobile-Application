@@ -10,7 +10,7 @@ namespace expense_tracker.Services
                 throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 
-        public async Task<int> ImportTransactionsAsync(Stream csvStream)
+        public async Task<int> ImportTransactionsAsync(Stream csvStream, Guid userId)
         {
 
             using var reader = new StreamReader(csvStream);
@@ -35,6 +35,7 @@ namespace expense_tracker.Services
             {
                 var transaction = new Models.Transaction
                 {
+                    UserId = userId,
                     Date = csvTransaction.Date,
                     TransactionType = csvTransaction.TransactionType,
                     Description = csvTransaction.Description,
@@ -45,14 +46,15 @@ namespace expense_tracker.Services
                 using var command = new NpgsqlCommand(
                      """
                     INSERT INTO transactions
-                        (transaction_date, transaction_type, description, amount, balance)
+                        (user_id, transaction_date, transaction_type, description, amount, balance)
                     VALUES
-                        (@date, @transaction_type, @description, @amount, @balance)
-                    ON CONFLICT (transaction_date, amount, balance)
+                        (@UserId, @date, @transaction_type, @description, @amount, @balance)
+                    ON CONFLICT (user_id, transaction_date, amount, balance)
                     DO NOTHING;
                     """,
                      connection
                  );
+                command.Parameters.AddWithValue("UserId", userId);
                 command.Parameters.AddWithValue("date", transaction.Date.ToDateTime(new TimeOnly(0, 0)));
                 command.Parameters.AddWithValue("transaction_type", transaction.TransactionType);
                 command.Parameters.AddWithValue("description", transaction.Description);

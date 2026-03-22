@@ -1,0 +1,4 @@
+ALTER TABLE Transactions
+ADD COLUMN user_id UUID NOT NULL,
+ADD CONSTRAINT fk_user
+FOREIGN KEY (user_id) REFERENCES Users(id);

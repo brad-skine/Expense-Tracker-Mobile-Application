@@ -1,6 +1,5 @@
-
-  @if (chartOptions(); as opts) {
-    <div class="sale_chart_container">
-      <div class="monthlyChart" echarts [options]="opts"></div>
-      </div>
-  } 
+@if (chartOptions(); as opts) {
+    <div class="w-full py-2">
+        <div class="w-full h-full" echarts [options]="opts"></div>
+    </div>
+}

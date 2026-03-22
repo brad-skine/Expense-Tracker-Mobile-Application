@@ -15,7 +15,7 @@
 _ReSharper*/
 *.DotSettings.user
 
-
+/backend_api/expense_tracker/Utils/Keys/
 
 # Build output files
 **/bin/
@@ -27,6 +27,7 @@ _ReSharper*/
 
 **\.idea
 
+**.idea
 backend_api/packages/*.nupkg
 *.snupkg
 *.sln.iml

@@ -1,0 +1,40 @@
+<main>
+    <form (ngSubmit)="onSubmit()">
+
+        <h1>Register a new account</h1>
+        <div class= "login">
+            <label>
+                Email
+                <input type="email" [field]="RegisterForm.email" />
+            </label>
+            <div class = "error_space">
+                @if (RegisterForm.email().touched() && RegisterForm.email().invalid()) {
+                    <span class="error">
+            {{ RegisterForm.email().errors()[0].message }}
+          </span>
+                }
+            </div>
+        </div>
+        <div>
+            <label>
+                Password
+                <input type="password" [field]="RegisterForm.password" />
+            </label>
+            <div class = "error_space">
+                @if (RegisterForm.password().touched() && RegisterForm.password().invalid()) {
+                    <span class="error">
+                {{ RegisterForm.password().errors()[0].message }}
+              </span>
+                }
+            </div>
+        </div>
+        <button type="submit" [disabled]="RegisterForm().invalid()">Register</button>
+        @if (serverError()) {
+            <div class="server-error">{{serverError()}}</div>
+        }
+        <p class ="auth_switch">
+            Already have an account?
+            <a routerLink="/login">Log in</a>
+        </p>
+    </form>
+</main>

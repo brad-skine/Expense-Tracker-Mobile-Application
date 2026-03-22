@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, switchMap } from 'rxjs';
-import { TransactionModel } from '../models/transaction.model';
+import { TransactionModel } from '../../models/transaction.model';
 import { environment } from 'src/environments/environment';
 
 

@@ -33,7 +33,6 @@ echarts.use([
   standalone: true,
   imports: [CommonModule, NgxEchartsDirective],
   templateUrl: './type_pie_chart.html',
-  styleUrls: ['./type_pie_chart.scss'],
   providers: [provideEchartsCore({echarts})]
 })
 
@@ -82,7 +81,7 @@ export class TypePieChartComponent  {
 
         legend: {
           show: true,
-          bottom: 120,
+          bottom: 10,
           textStyle: {
             color: '#cbd5f5',
             fontSize: 12
@@ -96,7 +95,7 @@ export class TypePieChartComponent  {
             containLabel: true,
             minAngle: 15,
             radius: '65%',
-            center: ['50%', '35%'],
+            center: ['50%', '49%'],
             data: data.map(d => ({
             name: d.transactionType,
              value: Number(d.total)
