@@ -27,7 +27,6 @@ _ReSharper*/
 
 **\.idea
 
-**Production.json
 
 **.idea
 backend_api/packages/*.nupkg
