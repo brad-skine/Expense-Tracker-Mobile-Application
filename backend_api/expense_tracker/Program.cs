@@ -102,6 +102,22 @@ builder.Services.AddSwaggerGen(options =>
 
 //below builds app
 var app = builder.Build();
+
+app.UseExceptionHandler(errorApp =>
+{
+    errorApp.Run(async context =>
+    {
+        var error = context.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>();
+        context.Response.ContentType = "application/json";
+        context.Response.StatusCode = 500;
+        await context.Response.WriteAsync(
+            System.Text.Json.JsonSerializer.Serialize(new { 
+                message = error?.Error?.Message, 
+                stack = error?.Error?.StackTrace 
+            })
+        );
+    });
+});
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseCors("AllowAngular");
