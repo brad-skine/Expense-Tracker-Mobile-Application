@@ -17,7 +17,7 @@ namespace expense_tracker.Services
             _config = config;
             var privateKeyPem = Environment.GetEnvironmentVariable("JWT_PRIVATE_KEY")
                                 ?? File.ReadAllText("Utils/Keys/jwt_private.pem"); // fallback for local dev
-            privateKeyPem = privateKeyPem.Replace("\\n", "\n");
+            
             var rsa = RSA.Create();
             rsa.ImportFromPem(privateKeyPem);
             _privateKey = new RsaSecurityKey(rsa);
