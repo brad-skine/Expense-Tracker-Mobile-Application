@@ -43,7 +43,7 @@ namespace expense_tracker.Controllers
             }
             catch (UnauthorizedAccessException)
             {
-                return Unauthorized("Invalid email or password");
+                return Unauthorized(new {message = "Invalid email or password"});
             }
         }
     }

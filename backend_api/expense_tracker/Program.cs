@@ -101,8 +101,8 @@ builder.Services.AddSwaggerGen(options =>
 //below builds app
 var app = builder.Build();
 app.UseHttpsRedirection();
-app.UseCors("AllowAngular");
 app.UseRouting();
+app.UseCors("AllowAngular");
 app.UseAuthentication();
 app.UseAuthorization();
 

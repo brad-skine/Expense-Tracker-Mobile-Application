@@ -44,7 +44,7 @@ namespace expense_tracker.Services
             var userId = Guid.NewGuid();
             await conn.ExecuteAsync(insertSql, new
             {
-                ID = userId,
+                Id = userId,
                 Email = email,
                 PasswordHash = hash
             });
