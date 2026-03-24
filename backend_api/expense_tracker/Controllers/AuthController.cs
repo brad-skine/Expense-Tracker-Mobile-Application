@@ -26,9 +26,9 @@ namespace expense_tracker.Controllers
             {
                 return BadRequest(new { message = ex.Message });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, new { message = "Something went wrong" });
+                return StatusCode(500, new { message = ex.Message, stack = ex.StackTrace });
             }
         }
 
