@@ -56,7 +56,8 @@ builder.Services.AddCors(options =>
         });
 });
 
-var publicKeyPem = File.ReadAllText("Utils/Keys/jwt_public.pem");
+var publicKeyPem = Environment.GetEnvironmentVariable("JWT_PUBLIC_KEY")
+    ?? File.ReadAllText("Utils/Keys/jwt_public.pem"); // fallback for local dev
 var rsa = RSA.Create();
 rsa.ImportFromPem(publicKeyPem);
 

@@ -7,45 +7,42 @@ using System.Security.Cryptography;
 
 namespace expense_tracker.Services
 {
+    public class TokenService : ITokenService
+    {
+        private readonly RsaSecurityKey _privateKey;
+        private readonly IConfiguration _config;
 
-        public class TokenService : ITokenService
+        public TokenService(IConfiguration config)
         {
-            private readonly RsaSecurityKey _privateKey;
-            private readonly IConfiguration _config;
+            _config = config;
+            var privateKeyPem = Environment.GetEnvironmentVariable("JWT_PRIVATE_KEY")
+                                ?? File.ReadAllText("Utils/Keys/jwt_private.pem"); // fallback for local dev
+            var rsa = RSA.Create();
+            rsa.ImportFromPem(privateKeyPem);
+            _privateKey = new RsaSecurityKey(rsa);
+        }
 
-            public TokenService(IConfiguration config)
+        public string GenerateToken(User user)
+        {
+            var claims = new[]
             {
-                _config = config;
-                var privateKeyPem = File.ReadAllText("Utils/Keys/jwt_private.pem");
-                var rsa = RSA.Create();
-                rsa.ImportFromPem(privateKeyPem);
-                _privateKey = new RsaSecurityKey(rsa);
-            }
-            public string GenerateToken(User user)
-            {
-                var claims = new[]
-                {
-                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                    new Claim(ClaimTypes.Email, user.Email)
-                };
-                
-                var credentials= new SigningCredentials(
-                    _privateKey,
-            SecurityAlgorithms.RsaSha256);
-                
-                var token = new JwtSecurityToken(
-                    issuer: _config["Jwt:Issuer"],
-                    audience: _config["Jwt:Audience"],
-                    claims: claims,
-                    expires: DateTime.UtcNow.AddHours(1),
-                    signingCredentials: credentials
-                    );
-            
-                return new JwtSecurityTokenHandler().WriteToken(token);
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Email, user.Email)
+            };
 
-            }
+            var credentials = new SigningCredentials(
+                _privateKey,
+                SecurityAlgorithms.RsaSha256);
 
+            var token = new JwtSecurityToken(
+                issuer: _config["Jwt:Issuer"],
+                audience: _config["Jwt:Audience"],
+                claims: claims,
+                expires: DateTime.UtcNow.AddHours(1),
+                signingCredentials: credentials
+            );
 
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
-
+}
