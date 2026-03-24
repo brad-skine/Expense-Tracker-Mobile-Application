@@ -58,6 +58,7 @@ builder.Services.AddCors(options =>
 
 var publicKeyPem = Environment.GetEnvironmentVariable("JWT_PUBLIC_KEY")
     ?? File.ReadAllText("Utils/Keys/jwt_public.pem"); // fallback for local dev
+publicKeyPem = publicKeyPem.Replace("\\n", "\n");
 var rsa = RSA.Create();
 rsa.ImportFromPem(publicKeyPem);
 
