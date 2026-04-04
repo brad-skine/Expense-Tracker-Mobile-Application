@@ -5,4 +5,5 @@ export interface TransactionModel{
     description: string;
     amount: number;
     balance: number;
+    category: string;
 }

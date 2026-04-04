@@ -1,22 +1,23 @@
-import { Component, computed, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { TypeSummaryService } from './type_summary.service';
-import { NgxEchartsDirective, provideEchartsCore} from 'ngx-echarts';
-import { toSignal } from '@angular/core/rxjs-interop';
+import {Component, computed, inject} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {NgxEchartsDirective, provideEchartsCore} from 'ngx-echarts';
+import {toSignal} from '@angular/core/rxjs-interop';
 
 import * as echarts from 'echarts/core';
-import { PieChart } from 'echarts/charts';
+import {PieChart} from 'echarts/charts';
 
 import {
-  TitleComponent,
-  TooltipComponent,
-  DatasetComponent,
-  TransformComponent,
-  LegendComponent
+    DatasetComponent,
+    LegendComponent,
+    TitleComponent,
+    TooltipComponent,
+    TransformComponent
 } from 'echarts/components';
 
-import { CanvasRenderer } from 'echarts/renderers';
-import { LabelLayout } from 'echarts/features';
+import {CanvasRenderer} from 'echarts/renderers';
+import {LabelLayout} from 'echarts/features';
+import {CategorySummaryService} from "./category_summary.service";
+
 echarts.use([
   PieChart,
   TitleComponent,
@@ -38,10 +39,12 @@ echarts.use([
 
 
 export class TypePieChartComponent  {
-  private typeSummaryService = inject(TypeSummaryService); 
+  // private typeSummaryService = inject(TypeSummaryService);
+
+    private categorySummaryService = inject(CategorySummaryService);
   error: string | null = null; // so can check if error then display it
 
-   typeSummaries = toSignal(this.typeSummaryService.getAllTypeSummaries(
+   typeSummaries = toSignal(this.categorySummaryService.getAllCategorySummaries(
     ), {initialValue: []});
 
   chartOptions = computed(() => {
@@ -97,7 +100,7 @@ export class TypePieChartComponent  {
             radius: '65%',
             center: ['50%', '49%'],
             data: data.map(d => ({
-            name: d.transactionType,
+            name: d.category,
              value: Number(d.total)
             })),
 

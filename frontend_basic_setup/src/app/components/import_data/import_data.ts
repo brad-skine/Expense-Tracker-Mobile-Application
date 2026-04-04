@@ -1,10 +1,10 @@
-import { Component, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { importDataService } from './import_data.service';
-import { TransactionService } from 'src/app/components/transaction-list/transaction.service';
-import { monthlySalesService } from 'src/app/components/monthly-chart/monthly_sales.service';
-import { TypeSummaryService } from '../type_pie_chart/type_summary.service';
+import {Component, inject, signal} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {importDataService} from './import_data.service';
+import {TransactionService} from 'src/app/components/transaction-list/transaction.service';
 import {RefreshService} from "../../data/refresh-service";
+import {CategorySummaryService} from "../type_pie_chart/category_summary.service";
+
 @Component({
   selector: 'app-import_button',
   standalone: true,
@@ -15,9 +15,8 @@ import {RefreshService} from "../../data/refresh-service";
 export class ImportButtonComponent{
     private importService = inject(importDataService); 
     private transactionService = inject(TransactionService);
-    private monthlySalesService = inject(monthlySalesService)
-    private typeSummaryService = inject(TypeSummaryService);
     private refreshService = inject(RefreshService);
+    private categorySummaryService = inject(CategorySummaryService);
     // import_result$: Observable<string> = this.importService.importData();
 
     uploadStatus = signal<'idle' | 'success' | 'error'>('idle');
@@ -36,7 +35,7 @@ export class ImportButtonComponent{
                 this.transactionService.triggerRefresh();
                 this.refreshService.triggerRefresh();
                 // this.monthlySalesService.triggerRefresh();
-                this.typeSummaryService.triggerRefresh();
+                this.categorySummaryService.triggerRefresh();
 
             },
             error: err => {

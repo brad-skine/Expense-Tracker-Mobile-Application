@@ -1,29 +1,14 @@
-﻿
-using Dapper;
+﻿using Dapper;
 using expense_tracker.Models;
-using Microsoft.AspNetCore.SignalR;
-using Npgsql;
-
+using expense_tracker.Utils;
 
 namespace expense_tracker.Services
 {
 
-    public class TransactionQueryService 
+    public class TransactionQueryService (DbConnectionFactory db)
     {
-        private readonly string _connectionString;
 
-        public TransactionQueryService(IConfiguration configuration)
-        {
-            _connectionString = configuration.GetConnectionString("DefaultConnection") ??
-                throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-        }
-
-        private Npgsql.NpgsqlConnection GetConnection()
-        {
-            return new Npgsql.NpgsqlConnection(_connectionString);
-        }
-
-        public async Task<IEnumerable<Transaction>> GetAllTansactionsAsync(Guid userId)
+        public async Task<IEnumerable<Transaction>> GetAllTransactionsAsync(Guid userId)
         {
 
             const string sql = $"""
@@ -36,9 +21,9 @@ namespace expense_tracker.Services
                                 amount,
                                 balance
                                 FROM transactions
-                                WHERE user_id = @UserId
+                                WHERE user_id = @UserId;
                                 """;
-            using var conn = GetConnection();
+            await using var conn = db.CreateConnection();
             return await conn.QueryAsync<Transaction>(sql, new {UserId= userId});
         }
 
@@ -58,7 +43,7 @@ namespace expense_tracker.Services
             
             """;
 
-            using var conn = GetConnection();
+            await using var conn = db.CreateConnection();
             return await conn.QueryAsync<MonthlySummaryDto>(sql, new {UserId = userId});
         }
 
@@ -74,7 +59,7 @@ namespace expense_tracker.Services
                 GROUP by year
                 ORDER by year
                 """;
-            using var conn = GetConnection();
+            await using var conn = db.CreateConnection();
             return await conn.QueryAsync<YearlySummaryDto>(sql, new {UserId = userId});
         }
 
@@ -93,15 +78,41 @@ namespace expense_tracker.Services
                 ORDER BY Total DESC;
                 """;
 
-            using var conn = GetConnection();
+            await using var conn = db.CreateConnection();
             return await conn.QueryAsync<TypeSummaryDto>(sql, new {UserId = userId}); 
         }
+        // NEW: Category-based spending summary (replaces type summary for pie chart)
+        public async Task<IEnumerable<CategorySummaryDto>> GetCategorySummaryAsync(Guid userId)
+        {
+            const string sql = """
+                SELECT
+                    category AS Category,
+                    SUM(ABS(amount)) AS Total
+                FROM transactions
+                WHERE user_id = @UserId AND amount < 0
+                GROUP BY category
+                ORDER BY Total DESC
+                """;
+ 
+            await using var conn = db.CreateConnection();
+            return await conn.QueryAsync<CategorySummaryDto>(sql, new { UserId = userId });
+        }
+ 
+        // NEW: Get all available categories (for frontend dropdowns)
+        public async Task<IEnumerable<CategoryDto>> GetCategoriesAsync()
+        {
+            const string sql = """
+                SELECT id AS Id, name AS Name, display_order AS DisplayOrder
+                FROM categories
+                WHERE is_active = TRUE
+                ORDER BY display_order
+                """;
+ 
+            await using var conn = db.CreateConnection();
+            return await conn.QueryAsync<CategoryDto>(sql);
+        }
     }
-
 }
-
-    
-
 
 
 

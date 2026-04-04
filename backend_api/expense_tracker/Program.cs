@@ -7,6 +7,7 @@
 using System.Security.Cryptography;
 using expense_tracker.Services;
 using expense_tracker.Services.Interfaces;
+using expense_tracker.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
@@ -21,10 +22,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 
-builder.Services.AddScoped<expense_tracker.Services.CsvImportService>();
+builder.Services.AddSingleton<DbConnectionFactory>();
 builder.Services.AddScoped<expense_tracker.Services.TransactionQueryService>();
 builder.Services.AddScoped<expense_tracker.Services.AuthService>();
 builder.Services.AddScoped<expense_tracker.Services.TokenService>();
+builder.Services.AddScoped<expense_tracker.Services.CategoryClassifierService>();
+builder.Services.AddScoped<expense_tracker.Services.CsvImportService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 // builder.Services.AddOpenApi();

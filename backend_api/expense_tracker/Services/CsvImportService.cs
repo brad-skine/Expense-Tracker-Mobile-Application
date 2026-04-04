@@ -1,35 +1,29 @@
 ﻿using CsvHelper;
 using Npgsql;
 using System.Globalization;
+using expense_tracker.Utils;
 
 namespace expense_tracker.Services
 {
-    public class CsvImportService(IConfiguration configuration)
+    public class CsvImportService(DbConnectionFactory db, CategoryClassifierService classifier)
     {
-        private readonly string _connectionString = configuration.GetConnectionString("DefaultConnection") ??
-                throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-
-
         public async Task<int> ImportTransactionsAsync(Stream csvStream, Guid userId)
         {
-
             using var reader = new StreamReader(csvStream);
 
             var config = new CsvHelper.Configuration.CsvConfiguration(CultureInfo.InvariantCulture)
             {
                 PrepareHeaderForMatch = args => args.Header.Trim().ToLower(),
-                MissingFieldFound = null // optional: ignore missing columns
+                MissingFieldFound = null
             };
 
             using var csv = new CsvHelper.CsvReader(reader, config);
 
             var records = csv.GetRecords<Models.transactionCsv>().ToList();
-            using var connection = new Npgsql.NpgsqlConnection(_connectionString);
+            await using var connection = db.CreateConnection();
+            await connection.OpenAsync();
 
-            await connection.OpenAsync(); // Open the database connection
-            int inserted = 0; // Counter for inserted records
-            int skipped = 0; // Counter for skipped records might not use as slow
-
+            int inserted = 0;
 
             foreach (var csvTransaction in records)
             {
@@ -43,38 +37,41 @@ namespace expense_tracker.Services
                     Balance = Utils.MoneyParser.ParseMoney(csvTransaction.Balance)
                 };
 
+                // Classify the transaction before inserting
+                var category = await classifier.ClassifyAsync(
+                    transaction.Description,
+                    transaction.TransactionType,
+                    transaction.Amount,
+                    userId);
+
                 using var command = new NpgsqlCommand(
-                     """
+                    """
                     INSERT INTO transactions
-                        (user_id, transaction_date, transaction_type, description, amount, balance)
+                        (user_id, transaction_date, transaction_type, description, amount, balance, category)
                     VALUES
-                        (@UserId, @date, @transaction_type, @description, @amount, @balance)
+                        (@UserId, @date, @transaction_type, @description, @amount, @balance, @category)
                     ON CONFLICT (user_id, transaction_date, amount, balance)
                     DO NOTHING;
                     """,
-                     connection
-                 );
+                    connection
+                );
+
                 command.Parameters.AddWithValue("UserId", userId);
                 command.Parameters.AddWithValue("date", transaction.Date.ToDateTime(new TimeOnly(0, 0)));
                 command.Parameters.AddWithValue("transaction_type", transaction.TransactionType);
                 command.Parameters.AddWithValue("description", transaction.Description);
                 command.Parameters.AddWithValue("amount", transaction.Amount);
                 command.Parameters.AddWithValue("balance", transaction.Balance);
+                command.Parameters.AddWithValue("category", category);
 
-                int new_row = await command.ExecuteNonQueryAsync();
-                if (new_row == 1)
+                int newRow = await command.ExecuteNonQueryAsync();
+                if (newRow == 1)
                 {
                     inserted++;
                 }
-                else
-                {
-                    skipped++;
-                }
-
             }
 
             return inserted;
-
         }
     }
 }

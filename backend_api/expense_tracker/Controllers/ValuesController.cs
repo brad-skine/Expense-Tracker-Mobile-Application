@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using expense_tracker.Services;
 
 namespace expense_tracker.Controllers
 {
@@ -12,23 +13,24 @@ namespace expense_tracker.Controllers
     public class QuerysController : ControllerBase
     {
         private readonly Services.TransactionQueryService _service;
-
+        private readonly Services.CategoryClassifierService _classifier;
         private Guid GetUserId()
         {
             return Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
         }
 
-        public QuerysController(Services.TransactionQueryService transactionQueryService)
+        public QuerysController(Services.TransactionQueryService transactionQueryService, CategoryClassifierService classifier)
         {
             _service = transactionQueryService;
+            _classifier = classifier;
         }
 
 
         [HttpGet("all")]
         public async Task<IActionResult> GetAllTransactionsAsync()
         {
-            var transactions = await _service.GetAllTansactionsAsync(GetUserId());
+            var transactions = await _service.GetAllTransactionsAsync(GetUserId());
           
             return Ok(transactions);
         }
@@ -54,5 +56,29 @@ namespace expense_tracker.Controllers
             return Ok(summary);
         }
 
+        // NEW: Category-based spending summary
+        [HttpGet("summary/category")]
+        public async Task<IActionResult> GetCategorySummaryAsync()
+        {
+            var summary = await _service.GetCategorySummaryAsync(GetUserId());
+            return Ok(summary);
+        }
+ 
+        // NEW: Get all available categories
+        [HttpGet("categories")]
+        public async Task<IActionResult> GetCategoriesAsync()
+        {
+            var categories = await _service.GetCategoriesAsync();
+            return Ok(categories);
+        }
+ 
+        // NEW: Re-classify existing transactions
+        [HttpPost("reclassify")]
+        public async Task<IActionResult> ReclassifyAsync([FromQuery] bool force = false)
+        {
+            var updated = await _classifier.ReclassifyAsync(GetUserId(), force);
+            return Ok(new { message = "Reclassification complete", updated });
+        }
     }
 }
+ 
