@@ -16,7 +16,7 @@ namespace expense_tracker.Services
                                 id,
                                 --user_id AS UserId,
                                 transaction_date AS Date,
-                                transaction_type AS TransactionType,
+                                category,
                                 description,
                                 amount,
                                 balance

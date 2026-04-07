@@ -1,0 +1,28 @@
+<div class="tx-page">
+    <div class="sort-bar">
+        <span class="sort-label">Sort:</span>
+        <button class="sort-btn" [class.active]="sortKey() === 'date'" (click)="setSort('date')">
+            Date {{ sortKey() === 'date' ? (sortDir() === 'desc' ? '↓' : '↑') : '' }}
+        </button>
+        <button class="sort-btn" [class.active]="sortKey() === 'amount'" (click)="setSort('amount')">
+            Amount {{ sortKey() === 'amount' ? (sortDir() === 'desc' ? '↓' : '↑') : '' }}
+        </button>
+        <button class="sort-btn" [class.active]="sortKey() === 'description'" (click)="setSort('description')">
+            Name {{ sortKey() === 'description' ? (sortDir() === 'desc' ? '↓' : '↑') : '' }}
+        </button>
+    </div>
+
+    <div class="tx-list">
+        @for (tx of transactions(); track tx.id) {
+            <div class="tx-item" [class.tx-negative]="tx.amount < 0" [class.tx-positive]="tx.amount >= 0">
+                <div class="tx-info">
+                    <span class="tx-description">{{ tx.description }}</span>
+                    <span class="tx-meta">{{ tx.date | date:'dd MMM yyyy' }} · {{ tx.category }}</span>
+                </div>
+                <span class="tx-amount">${{ tx.amount | number:'1.2-2' }}</span>
+            </div>
+        } @empty {
+            <p class="tx-empty">No transactions loaded</p>
+        }
+    </div>
+</div>

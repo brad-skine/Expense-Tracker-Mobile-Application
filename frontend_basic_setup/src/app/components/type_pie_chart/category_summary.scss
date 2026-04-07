@@ -1,0 +1,269 @@
+.chart-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  position: relative;
+}
+.pie-chart {
+  width: 100%;
+  height: 250px;
+  cursor: pointer;
+}
+
+.hint {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--secondary-color);
+  margin-top: -0.5rem;
+  opacity: 0.6;
+}
+
+// Drill-down view
+.drilldown-container {
+  width: 100%;
+  animation: fadeIn 0.25s ease-out;
+  margin-top: 1rem;
+}
+
+.drilldown-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.back-button {
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #cbd5f5;
+  padding: 0.4rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  &:active {
+    background: rgba(255, 255, 255, 0.15);
+  }
+}
+
+.drilldown-title {
+  flex: 1;
+
+  h2 {
+    font-size: 1.1rem;
+    margin: 0;
+    color: var(--primary-color);
+  }
+}
+
+.drilldown-total {
+  font-size: 0.8rem;
+  color: var(--secondary-color);
+}
+
+.drilldown-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.drilldown-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 0.75rem;
+  background: var(--background-color);
+  border-radius: 8px;
+}
+
+.item-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.item-description {
+  font-size: 0.75rem;
+  color: var(--primary-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.item-date {
+  font-size: 0.7rem;
+  color: var(--secondary-color);
+  margin-top: 0.15rem;
+}
+
+.item-amount {
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-left: 0.75rem;
+  white-space: nowrap;
+}
+
+.item-negative .item-amount {
+  color: #a01717;
+}
+
+.item-positive .item-amount {
+  color: #1d4ed8;
+}
+
+.empty {
+  text-align: center;
+  color: var(--secondary-color);
+  padding: 2rem 0;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.category-legend {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+}
+
+.legend-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.6rem;
+  background: rgba(255,255,255,0.06);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+  &:active { background: rgba(255,255,255,0.14); }
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.legend-name {
+  flex: 1;
+  font-size: 0.72rem;
+  color: #cbd5f5;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.legend-amount {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #a0aec0;
+  white-space: nowrap;
+}
+.chart-toggle {
+  display: flex;
+  margin-top: 0.5em;
+  margin-left: 0.5em;
+  z-index: 2;
+  gap: 0.35rem;
+}
+
+.toggle-btn {
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: #64748b;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+
+  &.active {
+    background: rgba(84, 112, 198, 0.25);
+    border-color: rgba(84, 112, 198, 0.5);
+    color: #93b4f8;
+  }
+
+  &:not(.active):hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #cbd5f5;
+  }
+}
+
+.chart-wrap {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  cursor: pointer;
+}
+
+// Bar chart needs more height for categories
+.chart-container:has(.chart-wrap) .chart-wrap {
+  height: 320px;
+}
+
+.category-legend {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.2rem;
+  margin-top: 0.75rem;
+}
+
+.legend-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.6rem;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:active { background: rgba(255, 255, 255, 0.14); }
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.legend-name {
+  flex: 1;
+  font-size: 0.72rem;
+  color: #cbd5f5;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.legend-amount {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #a0aec0;
+  white-space: nowrap;
+}

@@ -1,58 +1,63 @@
-* {
-  margin: 0;
-  padding: 0;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 html, body {
   height: 100%;
-  // font-family: ;
   background-color: #121212;
   color: #fffdfd;
+  overflow: hidden; // no page scroll — each page manages its own
 }
 
-.app_container {
+.shell {
   display: flex;
   flex-direction: column;
-  padding: 1rem;
-  min-height: 100%;
+  height: 100dvh; // dynamic viewport height — safe for mobile
 }
 
-.app_header {
-
-  text-align: center;
-  margin: 0.7rem 0.5rem;
-  // margin-top: 2rem;
-
-  // margin-bottom: 2rem;
-
-  h1 {
-    font-size: 1.6rem;
-    font-weight: 700;
-    color: var(--primary-color);
-  }
-
-  p {
-    margin-top: 0.5rem;
-    color: var(--secondary-color);
-  }
-
+.shell-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  padding: 0.65rem 1rem;
+  flex-shrink: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.app_content {
+.shell-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.shell-content {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden; // children handle their own scroll
+  display: flex;
+  flex-direction: column;
+}
+
+.bottom-nav {
+  display: flex;
+  flex-shrink: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(18, 18, 18, 0.95);
+  padding-bottom: env(safe-area-inset-bottom); // handles iPhone notch
+}
+
+.nav-item {
   flex: 1;
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  align-items: flex-start;
-}
+  gap: 0.25rem;
+  padding: 0.6rem 0;
+  color: #64748b;
+  text-decoration: none;
+  font-size: 0.7rem;
+  transition: color 0.15s;
 
-.body_content {
-  width: 100%;
-  max-width: 420px;
-  padding: 1.25rem;
-
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  color: #cbd5f5;
+  &.active {
+    color: #93b4f8;
+  }
 }

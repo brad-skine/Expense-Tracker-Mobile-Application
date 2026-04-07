@@ -1,0 +1,22 @@
+<div class="home-page">
+
+    <!-- Scrollable tab selector -->
+    <div class="tab-bar">
+        @for (tab of tabs; track tab.key) {
+            <button class="tab" [class.active]="activeTab() === tab.key" (click)="setTab(tab.key)">
+                {{ tab.label }}
+            </button>
+        }
+    </div>
+
+    <!-- Chart area — only one renders at a time -->
+    <div class="chart-area">
+        @if (activeTab() === 'category') {
+            <app-category-chart></app-category-chart>
+        }
+        @if (activeTab() === 'monthly') {
+            <app-monthly-chart></app-monthly-chart>
+        }
+    </div>
+
+</div>

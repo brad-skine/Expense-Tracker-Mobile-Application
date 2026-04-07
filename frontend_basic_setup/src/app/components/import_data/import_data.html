@@ -1,26 +1,24 @@
+<div class="import_container">
+    <input id="UploadCsv" type="file" accept=".csv, .CSV"
+           (change)="onFileSelect($event)" hidden>
 
 
-<div class = "import_container">
-<input id = "UploadCsv" type="file" accept=".csv, .CSV"
-(change)="onFileSelect($event)" hidden>
+    <!--<p>Select a csv exported from bank transaction history</p>-->
+    <label for="UploadCsv" class="import_button">
+        Upload files
+    </label>
 
 
-<p>Select a csv exported from bank transaction history</p>
-<label for="UploadCsv" class="import_button">
- Upload files
-</label>
+    @if (uploadStatus() === "idle") {
+        <p>Awaiting upload</p>
+    }
 
 
-@if (uploadStatus() === "idle") {
-    <p>Awaiting upload</p>
-}
+    @if (uploadStatus() === "success") {
+        <p>Upload was a success</p>
+    }
 
-
-@if (uploadStatus() === "success") {
-    <p>Upload was a success</p>
-}
-
-@if (uploadStatus() === "error") {
-    <p>Upload had an error</p>
-}
+    @if (uploadStatus() === "error") {
+        <p>Upload had an error</p>
+    }
 </div>

@@ -1,0 +1,49 @@
+.home-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.tab-bar {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.65rem 1rem;
+  overflow-x: auto;
+  flex-shrink: 0;
+  scrollbar-width: none; // hide scrollbar on Firefox
+  -ms-overflow-style: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+
+  &::-webkit-scrollbar {
+    display: none; // hide scrollbar on Chrome/Safari
+  }
+}
+
+.tab {
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: #64748b;
+  font-size: 0.8rem;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.18s ease;
+
+  &.active {
+    background: rgba(84, 112, 198, 0.25);
+    border-color: rgba(84, 112, 198, 0.5);
+    color: #93b4f8;
+    font-weight: 600;
+  }
+}
+
+.chart-area {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}

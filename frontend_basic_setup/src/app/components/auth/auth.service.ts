@@ -1,30 +1,46 @@
-import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import {Observable, Subject, switchMap, tap} from 'rxjs';
-import { environment } from 'src/environments/environment';
-import {MonthlySalesModel} from "../../models/monthly_sale.model";
+import {inject, Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {tap} from 'rxjs';
+import {environment} from 'src/environments/environment';
 
 interface AuthResponse {
     token: string;
 }
+
 @Injectable({providedIn: 'root',})
 // TODO: use signals instead of manual trigger refresh
 export class AuthService {
     private apiUrl = environment.apiUrl + "/api/auth";
     private http = inject(HttpClient);
 
-    private storeToken(token: string){
+    private storeToken(token: string) {
         localStorage.setItem('token', token);
     }
+
     getToken(): string | null {
-        return localStorage.getItem('token');
+        const token = localStorage.getItem('token');
+        if (!token) return null;
+
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            if (payload.exp * 1000 < Date.now()) {
+                this.logout();
+                return null;
+            }
+        } catch {
+            this.logout();
+            return null;
+        }
+
+        return token;
     }
-    logout(){
+
+    logout() {
         localStorage.removeItem('token');
     }
 
     isAuthenticated(): boolean {
-        return localStorage.getItem('token') !== null;
+        return this.getToken() !== null;
     }
 
     register(email: string, password: string) {
@@ -35,7 +51,7 @@ export class AuthService {
 
     login(email: string, password: string) {
         return this.http.post<AuthResponse>(
-            `${this.apiUrl}/login`, { email, password })
+            `${this.apiUrl}/login`, {email, password})
             .pipe(tap(res => this.storeToken(res.token)));
     }
 }

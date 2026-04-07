@@ -1,24 +1,25 @@
-import { Component, computed, inject } from '@angular/core';
-import { monthlySalesService } from 'src/app/components/monthly-chart/monthly_sales.service';
-import { CommonModule} from '@angular/common';
-import { NgxEchartsDirective, provideEchartsCore} from 'ngx-echarts';
-import { toSignal } from '@angular/core/rxjs-interop';
+import {Component, computed, inject} from '@angular/core';
+import {monthlySalesService} from 'src/app/components/monthly-chart/monthly_sales.service';
+import {CommonModule} from '@angular/common';
+import {NgxEchartsDirective, provideEchartsCore} from 'ngx-echarts';
+import {toSignal} from '@angular/core/rxjs-interop';
 
 import * as echarts from 'echarts/core';
-import { BarChart } from 'echarts/charts';
+import {BarChart} from 'echarts/charts';
 import {
-  TitleComponent,
-  TooltipComponent,
-  GridComponent,
   DatasetComponent,
-  TransformComponent,
-  LegendComponent,
   DataZoomComponent,
-  ToolboxComponent
+  GridComponent,
+  LegendComponent,
+  TitleComponent,
+  ToolboxComponent,
+  TooltipComponent,
+  TransformComponent
 } from 'echarts/components';
 
-import { CanvasRenderer } from 'echarts/renderers';
+import {CanvasRenderer} from 'echarts/renderers';
 import {MonthlySalesModel} from "../../models/monthly_sale.model";
+
 echarts.use([
   BarChart,
   TitleComponent,
@@ -111,15 +112,9 @@ export class MonthlyChartComponent{
         // top: '50%',
         feature: {
             // Enable the built-in restore button
-            
             restore: {
                 show: true,
                 title: 'Reset Zoom' 
-            },
-
-            dataView: {
-                show: true,
-                readOnly: false
             },
             saveAsImage: {
                 show: true

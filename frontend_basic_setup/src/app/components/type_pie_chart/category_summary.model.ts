@@ -1,5 +1,5 @@
 export interface CategorySummaryModel {
-    category: string;
-    total: number;
+    category: string,
+    total: number
 }
 

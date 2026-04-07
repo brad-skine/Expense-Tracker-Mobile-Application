@@ -1,15 +1,12 @@
-import { Component } from '@angular/core';
-import { TransactionListComponent } from '../components/transaction-list/transaction-list';
-import { MonthlyChartComponent } from "../components/monthly-chart/monthly-chart";
-import { ImportButtonComponent } from "../components/import_data/import_data";
-import { TypePieChartComponent } from "../components/type_pie_chart/type_pie_chart";
+import {Component} from '@angular/core';
+import {RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
+import {ImportButtonComponent} from '../components/import_data/import_data';
 
 @Component({
   selector: 'app-layout',
-  imports: [TransactionListComponent, MonthlyChartComponent, ImportButtonComponent, TypePieChartComponent],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, ImportButtonComponent],
   templateUrl: './layout.html',
-  styleUrl: `./layout.scss`,
+  styleUrl: './layout.scss',
 })
 export class LayoutComponent {
-
 }
