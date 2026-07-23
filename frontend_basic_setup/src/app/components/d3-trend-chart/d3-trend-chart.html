@@ -1,0 +1,46 @@
+<div class="trend-container">
+
+    <!-- customisation controls -->
+    <div class="control-row">
+        <div class="control-group">
+            @for (s of styles; track s.key) {
+                <button class="control-tab" [class.active]="chartStyle() === s.key"
+                        (click)="chartStyle.set(s.key)">
+                    {{ s.label }}
+                </button>
+            }
+        </div>
+        <div class="control-group">
+            @for (grp of groupings; track grp.key) {
+                <button class="control-tab" [class.active]="grouping() === grp.key"
+                        (click)="grouping.set(grp.key)">
+                    {{ grp.label }}
+                </button>
+            }
+        </div>
+    </div>
+
+    <!-- category filter chips -->
+    <div class="chip-row">
+        <button class="chip" [class.active]="selectedCategories().size === 0"
+                (click)="clearCategories()">
+            All
+        </button>
+        @for (cat of categories(); track cat) {
+            <button class="chip"
+                    [class.active]="selectedCategories().has(cat)"
+                    [class.dimmed]="!isSelected(cat)"
+                    (click)="toggleCategory(cat)">
+                <span class="chip-dot" [style.background]="categoryColor(cat)"></span>
+                {{ cat }}
+            </button>
+        }
+    </div>
+
+    <div class="trend-total">
+        Total shown: <strong>${{ totalShown() | number:'1.2-2' }}</strong>
+    </div>
+
+    <!-- fixed-height host: D3 renders into this div -->
+    <div class="chart-host" #chartHost></div>
+</div>

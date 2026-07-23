@@ -28,6 +28,9 @@ builder.Services.AddScoped<expense_tracker.Services.AuthService>();
 builder.Services.AddScoped<expense_tracker.Services.TokenService>();
 builder.Services.AddScoped<expense_tracker.Services.CategoryClassifierService>();
 builder.Services.AddScoped<expense_tracker.Services.CsvImportService>();
+
+builder.Services.AddScoped<expense_tracker.Services.TransactionCrudService>();
+builder.Services.AddScoped<expense_tracker.Services.BudgetService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 // builder.Services.AddOpenApi();
@@ -103,7 +106,12 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-//below builds app
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = true;
+});
+
+
 var app = builder.Build();
 
 app.UseExceptionHandler(errorApp =>
@@ -123,6 +131,7 @@ app.UseExceptionHandler(errorApp =>
 });
 app.UseHttpsRedirection();
 app.UseRouting();
+app.UseResponseCompression();
 app.UseCors("AllowAngular");
 app.UseAuthentication();
 app.UseAuthorization();

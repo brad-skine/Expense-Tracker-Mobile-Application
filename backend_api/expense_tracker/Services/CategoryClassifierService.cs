@@ -15,9 +15,9 @@ namespace expense_tracker.Services
         /// Priority: transaction_type shortcuts → user rules → global rules → "Other"
         /// </summary>
         public async Task<string> ClassifyAsync(
-            string description, 
-            string transactionType, 
-            decimal amount, 
+            string description,
+            string transactionType,
+            decimal amount,
             Guid userId)
         {
             // 1. Quick classification by transaction type
@@ -68,16 +68,16 @@ namespace expense_tracker.Services
                 return _globalRulesCache;
 
             const string sql = """
-                SELECT 
-                    mr.pattern AS Pattern,
-                    c.name AS CategoryName,
-                    mr.match_type AS MatchType,
-                    mr.priority AS Priority
-                FROM merchant_rules mr
-                JOIN categories c ON c.id = mr.category_id
-                WHERE mr.is_global = TRUE
-                ORDER BY mr.priority ASC
-                """;
+                               SELECT 
+                                   mr.pattern AS Pattern,
+                                   c.name AS CategoryName,
+                                   mr.match_type AS MatchType,
+                                   mr.priority AS Priority
+                               FROM merchant_rules mr
+                               JOIN categories c ON c.id = mr.category_id
+                               WHERE mr.is_global = TRUE
+                               ORDER BY mr.priority ASC
+                               """;
 
             await using var conn = db.CreateConnection();
             var rules = (await conn.QueryAsync<MerchantRule>(sql)).ToList();
@@ -91,78 +91,79 @@ namespace expense_tracker.Services
         private async Task<List<MerchantRule>> GetUserRulesAsync(Guid userId)
         {
             const string sql = """
-                SELECT 
-                    mr.pattern AS Pattern,
-                    c.name AS CategoryName,
-                    mr.match_type AS MatchType,
-                    mr.priority AS Priority
-                FROM merchant_rules mr
-                JOIN categories c ON c.id = mr.category_id
-                WHERE mr.is_global = FALSE
-                  AND mr.user_id = @UserId
-                ORDER BY mr.priority 
-                """;
+                               SELECT 
+                                   mr.pattern AS Pattern,
+                                   c.name AS CategoryName,
+                                   mr.match_type AS MatchType,
+                                   mr.priority AS Priority
+                               FROM merchant_rules mr
+                               JOIN categories c ON c.id = mr.category_id
+                               WHERE mr.is_global = FALSE
+                                 AND mr.user_id = @UserId
+                               ORDER BY mr.priority 
+                               """;
 
             await using var conn = db.CreateConnection();
             return (await conn.QueryAsync<MerchantRule>(sql, new { UserId = userId })).ToList();
         }
 
         /// <summary>
+        /// Set-based reclassify: user rules first, then global rules, all in SQL.
         /// Re-classify all transactions for a user that currently have category = 'Other'
         /// or optionally all transactions (force = true)
         /// </summary>
         public async Task<int> ReclassifyAsync(Guid userId, bool force = false)
         {
-            const string selectSql = """
-                SELECT id, description, transaction_type AS TransactionType, amount
-                FROM transactions
-                WHERE user_id = @UserId
-                """;
+            var scopeFilter = force ? "" : "AND t2.category = 'Other'";
 
-            const string selectUnclassifiedSql = """
-                SELECT id, description, transaction_type AS TransactionType, amount
-                FROM transactions
-                WHERE user_id = @UserId AND category = 'Other'
-                """;
-
-            const string updateSql = """
-                UPDATE transactions SET category = @Category WHERE id = @Id
-                """;
+            var sql = $"""
+                       UPDATE transactions t
+                       SET category = matched.cat_name
+                       FROM (
+                           SELECT DISTINCT ON (t2.id) t2.id AS txn_id, c.name AS cat_name
+                           FROM transactions t2
+                           JOIN merchant_rules mr ON (mr.is_global = TRUE OR mr.user_id = @UserId) AND (
+                                  (mr.match_type = 'contains'    AND t2.description ILIKE '%' || mr.pattern || '%')
+                               OR (mr.match_type = 'starts_with' AND t2.description ILIKE mr.pattern || '%')
+                               OR (mr.match_type = 'exact'       AND LOWER(t2.description) = LOWER(mr.pattern))
+                           )
+                           JOIN categories c ON c.id = mr.category_id
+                           WHERE t2.user_id = @UserId {scopeFilter}
+                           ORDER BY t2.id, mr.priority ASC
+                       ) matched
+                       WHERE t.id = matched.txn_id;
+                       """;
 
             await using var conn = db.CreateConnection();
             await conn.OpenAsync();
 
-            var sql = force ? selectSql : selectUnclassifiedSql;
-            var transactions = (await conn.QueryAsync<TransactionForClassification>(
-                sql, new { UserId = userId })).ToList();
+            // type-based rules first (same as before, but set-based)
+            var typeUpdates = await conn.ExecuteAsync("""
+                                                      UPDATE transactions SET category = 'Fees'
+                                                      WHERE user_id = @UserId AND transaction_type = 'Fee'
+                                                        AND (category = 'Other' OR @Force);
+                                                      """, new { UserId = userId, Force = force });
 
-            int updated = 0;
-            foreach (var txn in transactions)
-            {
-                var category = await ClassifyAsync(
-                    txn.Description, txn.TransactionType, txn.Amount, userId);
+            typeUpdates += await conn.ExecuteAsync("""
+                                                   UPDATE transactions SET category = 'Income'
+                                                   WHERE user_id = @UserId AND transaction_type = 'Deposit' AND amount > 0
+                                                     AND (category = 'Other' OR @Force);
+                                                   """, new { UserId = userId, Force = force });
 
-                if (force || category != "Other")
-                {
-                    await conn.ExecuteAsync(updateSql, new { Category = category, txn.Id });
-                    updated++;
-                }
-            }
-
-            return updated;
+            return typeUpdates + await conn.ExecuteAsync(sql, new { UserId = userId });
         }
 
         // Internal DTOs
         private record MerchantRule(
-            string Pattern, 
-            string CategoryName, 
-            string MatchType, 
+            string Pattern,
+            string CategoryName,
+            string MatchType,
             int Priority);
 
         private record TransactionForClassification(
-            int Id, 
-            string Description, 
-            string TransactionType, 
+            int Id,
+            string Description,
+            string TransactionType,
             decimal Amount);
     }
 }

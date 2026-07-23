@@ -1,0 +1,67 @@
+<div class="plan-page">
+
+    <!-- month navigation -->
+    <div class="month-bar">
+        <button class="month-btn" (click)="changeMonth(-1)">‹</button>
+        <span class="month-label">{{ monthLabel() }}</span>
+        <button class="month-btn" (click)="changeMonth(1)">›</button>
+    </div>
+
+    <!-- overall summary -->
+    <div class="totals-card">
+        <div class="total">
+            <span class="total-label">Spent</span>
+            <span class="total-value spent">${{ totalSpent() | number:'1.0-0' }}</span>
+        </div>
+        <div class="total">
+            <span class="total-label">Budgeted</span>
+            <span class="total-value">${{ totalBudget() | number:'1.0-0' }}</span>
+        </div>
+        <div class="total">
+            <span class="total-label">Remaining</span>
+            <span class="total-value"
+                  [class.spent]="totalBudget() - totalSpent() < 0"
+                  [class.remaining]="totalBudget() - totalSpent() >= 0">
+                ${{ totalBudget() - totalSpent() | number:'1.0-0' }}
+            </span>
+        </div>
+    </div>
+
+    <!-- per-category budgets -->
+    <div class="budget-list">
+        @for (b of budgets(); track b.categoryId) {
+            <div class="budget-item">
+                <div class="budget-top">
+                    <span class="budget-name">{{ b.category }}</span>
+
+                    @if (editingId() === b.categoryId) {
+                        <span class="edit-controls">
+                            <input class="limit-input" type="number" inputmode="decimal"
+                                   min="0" step="10" placeholder="0"
+                                   [ngModel]="draftLimit()" (ngModelChange)="draftLimit.set($event)" />
+                            <button class="mini-btn save" (click)="saveEdit(b)">✓</button>
+                            <button class="mini-btn" (click)="cancelEdit()">✕</button>
+                        </span>
+                    } @else {
+                        <button class="budget-amounts" (click)="startEdit(b)">
+                            ${{ b.spent | number:'1.0-0' }}
+                            <span class="of">/</span>
+                            @if (b.monthlyLimit > 0) {
+                                ${{ b.monthlyLimit | number:'1.0-0' }}
+                            } @else {
+                                <span class="set-budget">set budget</span>
+                            }
+                        </button>
+                    }
+                </div>
+
+                <div class="bar-track">
+                    <div class="bar-fill" [class]="'bar-fill ' + barClass(b)"
+                         [style.width.%]="percent(b)"></div>
+                </div>
+            </div>
+        } @empty {
+            <p class="plan-empty">Loading budgets…</p>
+        }
+    </div>
+</div>

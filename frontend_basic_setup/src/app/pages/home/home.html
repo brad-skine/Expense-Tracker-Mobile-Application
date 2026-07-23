@@ -17,6 +17,10 @@
         @if (activeTab() === 'monthly') {
             <app-monthly-chart></app-monthly-chart>
         }
+
+        @if (activeTab() === 'trends') {
+            <app-d3-trend-chart></app-d3-trend-chart>
+        }
     </div>
 
 </div>

@@ -1,0 +1,66 @@
+<div class="modal-backdrop" (click)="cancel()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+        <h2 class="modal-title">{{ isEdit ? 'Edit transaction' : 'Add transaction' }}</h2>
+
+        <!-- expense / income toggle -->
+        <div class="sign-toggle">
+            <button type="button" class="sign-btn expense"
+                    [class.active]="isExpense()" (click)="isExpense.set(true)">
+                Expense
+            </button>
+            <button type="button" class="sign-btn income"
+                    [class.active]="!isExpense()" (click)="isExpense.set(false)">
+                Income
+            </button>
+        </div>
+
+        <label class="field">
+            <span>Description</span>
+            <input type="text" [ngModel]="description()" (ngModelChange)="description.set($event)"
+                   placeholder="e.g. New World Oamaru" autocomplete="off" />
+        </label>
+
+        <div class="field-row">
+            <label class="field">
+                <span>Amount</span>
+                <input type="number" inputmode="decimal" min="0" step="0.01"
+                       [ngModel]="amount()" (ngModelChange)="amount.set($event)"
+                       placeholder="0.00" />
+            </label>
+
+            <label class="field">
+                <span>Date</span>
+                <input type="date" [ngModel]="date()" (ngModelChange)="date.set($event)" />
+            </label>
+        </div>
+
+        <label class="field">
+            <span>Category</span>
+            <select [ngModel]="category()" (ngModelChange)="category.set($event)">
+                @if (!isEdit) {
+                    <option value="">Auto-detect</option>
+                }
+                @for (cat of categories(); track cat.id) {
+                    <option [value]="cat.name">{{ cat.name }}</option>
+                }
+            </select>
+        </label>
+
+        @if (error()) {
+            <p class="form-error">{{ error() }}</p>
+        }
+
+        <div class="modal-actions">
+            @if (isEdit) {
+                <button type="button" class="btn-danger" (click)="delete()" [disabled]="saving()">
+                    {{ confirmingDelete() ? 'Tap again to delete' : 'Delete' }}
+                </button>
+            }
+            <span class="spacer"></span>
+            <button type="button" class="btn-ghost" (click)="cancel()" [disabled]="saving()">Cancel</button>
+            <button type="button" class="btn-primary" (click)="save()" [disabled]="saving()">
+                {{ saving() ? 'Saving…' : 'Save' }}
+            </button>
+        </div>
+    </div>
+</div>

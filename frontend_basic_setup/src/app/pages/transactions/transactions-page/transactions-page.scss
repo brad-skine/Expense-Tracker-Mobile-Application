@@ -3,6 +3,7 @@
   flex-direction: column;
   height: 100%;
   overflow: hidden;
+  position: relative; // anchor for the FAB
 }
 
 .sort-bar {
@@ -42,7 +43,7 @@
   flex: 1;
   overflow-y: auto;
   min-height: 0;
-  padding: 0.6rem 1rem;
+  padding: 0.6rem 1rem 4.5rem; // bottom space so FAB doesn't cover last row
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
@@ -59,6 +60,10 @@
   background: rgba(255, 255, 255, 0.05);
   border-radius: 10px;
   flex-shrink: 0;
+  cursor: pointer;
+  transition: background 0.12s;
+
+  &:active { background: rgba(255, 255, 255, 0.12); }
 }
 
 .tx-info {
@@ -97,4 +102,23 @@
   color: #64748b;
   padding: 2rem 0;
   font-size: 0.85rem;
+}
+
+.fab {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(84, 112, 198, 0.9);
+  color: #fff;
+  font-size: 1.7rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+  transition: transform 0.12s;
+
+  &:active { transform: scale(0.92); }
 }

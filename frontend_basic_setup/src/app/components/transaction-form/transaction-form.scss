@@ -1,0 +1,149 @@
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 6, 23, 0.72);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: flex-end;   // bottom sheet on mobile
+  justify-content: center;
+  z-index: 50;
+
+  @media (min-width: 640px) {
+    align-items: center;   // centred dialog on larger screens
+  }
+}
+
+.modal-card {
+  width: 100%;
+  max-width: 420px;
+  background: hsl(225, 20%, 12%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px 16px 0 0;
+  padding: 1.1rem 1rem calc(1rem + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  animation: slide-up 0.22s ease;
+
+  @media (min-width: 640px) {
+    border-radius: 16px;
+  }
+}
+
+@keyframes slide-up {
+  from { transform: translateY(30px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+.modal-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.sign-toggle {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.sign-btn {
+  flex: 1;
+  padding: 0.45rem 0;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: #94a3b8;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &.expense.active {
+    background: rgba(248, 113, 113, 0.15);
+    border-color: rgba(248, 113, 113, 0.5);
+    color: #f87171;
+    font-weight: 600;
+  }
+  &.income.active {
+    background: rgba(96, 165, 250, 0.15);
+    border-color: rgba(96, 165, 250, 0.5);
+    color: #60a5fa;
+    font-weight: 600;
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+
+  span {
+    font-size: 0.68rem;
+    color: #64748b;
+  }
+
+  input, select {
+    padding: 0.55rem 0.65rem;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    color: #e2e8f0;
+    font-size: 0.85rem;
+    outline: none;
+    width: 100%;
+    color-scheme: dark;   // dark native date picker
+
+    &:focus {
+      border-color: rgba(84, 112, 198, 0.6);
+    }
+  }
+}
+
+.field-row {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.form-error {
+  font-size: 0.72rem;
+  color: #f87171;
+}
+
+.modal-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+
+  .spacer { flex: 1; }
+}
+
+.btn-primary, .btn-ghost, .btn-danger {
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.15s;
+
+  &:disabled { opacity: 0.5; cursor: default; }
+}
+
+.btn-primary {
+  background: rgba(84, 112, 198, 0.35);
+  border-color: rgba(84, 112, 198, 0.6);
+  color: #93b4f8;
+  font-weight: 600;
+}
+
+.btn-ghost {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #94a3b8;
+}
+
+.btn-danger {
+  background: rgba(248, 113, 113, 0.12);
+  border-color: rgba(248, 113, 113, 0.4);
+  color: #f87171;
+}

@@ -14,7 +14,10 @@
 
     <div class="tx-list">
         @for (tx of transactions(); track tx.id) {
-            <div class="tx-item" [class.tx-negative]="tx.amount < 0" [class.tx-positive]="tx.amount >= 0">
+            <div class="tx-item"
+                 [class.tx-negative]="tx.amount < 0"
+                 [class.tx-positive]="tx.amount >= 0"
+                 (click)="openEdit(tx)">
                 <div class="tx-info">
                     <span class="tx-description">{{ tx.description }}</span>
                     <span class="tx-meta">{{ tx.date | date:'dd MMM yyyy' }} · {{ tx.category }}</span>
@@ -22,7 +25,17 @@
                 <span class="tx-amount">${{ tx.amount | number:'1.2-2' }}</span>
             </div>
         } @empty {
-            <p class="tx-empty">No transactions loaded</p>
+            <p class="tx-empty">No transactions yet — import a CSV or tap + to add one</p>
         }
     </div>
+
+    <!-- floating add button -->
+    <button class="fab" (click)="openAdd()" aria-label="Add transaction">+</button>
+
+    @if (formOpen()) {
+        <app-transaction-form
+            [transaction]="editingTx()"
+            (closed)="closeForm()">
+        </app-transaction-form>
+    }
 </div>

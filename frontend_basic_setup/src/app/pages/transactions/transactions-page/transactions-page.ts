@@ -1,6 +1,8 @@
-import {Component, computed, inject, signal} from '@angular/core';
+import {Component, computed, inject, Signal, signal} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {toSignal} from '@angular/core/rxjs-interop';
+import {TransactionModel} from "../../../models/transaction.model";
+import {TransactionFormComponent} from "../../../components/transaction-form/transaction-form";
 import {TransactionService} from "../../../components/transaction-list/transaction.service";
 
 type SortKey = 'date' | 'amount' | 'description';
@@ -9,7 +11,7 @@ type SortDir = 'asc' | 'desc';
 @Component({
   selector: 'app-transactions-page',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TransactionFormComponent],
   templateUrl: './transactions-page.html',
   styleUrl: './transactions-page.scss',
 })
@@ -19,9 +21,13 @@ export class TransactionsPageComponent {
   sortKey = signal<SortKey>('date');
   sortDir = signal<SortDir>('desc');
 
-  private allTransactions = toSignal(
+  // modal state: closed | adding | editing a transaction
+  formOpen = signal(false);
+  editingTx = signal<TransactionModel | null>(null);
+
+  private allTransactions:Signal<TransactionModel[]> = toSignal(
       this.transactionService.getAllTransactions(),
-      { initialValue: [] }
+      { initialValue: [] as TransactionModel[] }
   );
 
   transactions = computed(() => {
@@ -47,5 +53,20 @@ export class TransactionsPageComponent {
       this.sortKey.set(key);
       this.sortDir.set('desc');
     }
+  }
+
+  openAdd() {
+    this.editingTx.set(null);
+    this.formOpen.set(true);
+  }
+
+  openEdit(tx: TransactionModel) {
+    this.editingTx.set(tx);
+    this.formOpen.set(true);
+  }
+
+  closeForm() {
+    this.formOpen.set(false);
+    this.editingTx.set(null);
   }
 }

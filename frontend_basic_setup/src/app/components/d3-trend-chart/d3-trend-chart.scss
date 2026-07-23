@@ -1,0 +1,130 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.trend-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  padding: 0.6rem 1rem 0.75rem;
+  overflow: hidden;
+}
+
+.control-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+.control-group {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.control-tab {
+  padding: 0.3rem 0.7rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: #94a3b8;
+  font-size: 0.72rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+
+  &.active {
+    background: rgba(84, 112, 198, 0.2);
+    border-color: rgba(84, 112, 198, 0.5);
+    color: #93b4f8;
+    font-weight: 600;
+  }
+}
+
+.chip-row {
+  display: flex;
+  gap: 0.35rem;
+  overflow-x: auto;
+  padding: 0.55rem 0 0.2rem;
+  flex-shrink: 0;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar { display: none; }
+}
+
+.chip {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.28rem 0.65rem;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: #cbd5f5;
+  font-size: 0.7rem;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.15s;
+
+  &.active {
+    background: rgba(84, 112, 198, 0.22);
+    border-color: rgba(84, 112, 198, 0.55);
+  }
+
+  &.dimmed { opacity: 0.45; }
+}
+
+.chip-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.trend-total {
+  font-size: 0.72rem;
+  color: #64748b;
+  padding: 0.15rem 0 0.35rem;
+  flex-shrink: 0;
+
+  strong { color: #cbd5f5; }
+}
+
+// D3 needs a concrete pixel height — same lesson as ngx-echarts:
+// flex:1 + min-height:0 gives it real measurable space
+.chart-host {
+  flex: 1;
+  min-height: 220px;
+  width: 100%;
+}
+
+// ---- axis + tooltip styling (D3-generated nodes) ----
+:host ::ng-deep {
+  .x-axis text, .y-axis text {
+    fill: #64748b;
+    font-size: 0.62rem;
+  }
+  .x-axis path, .y-axis path,
+  .x-axis line, .y-axis line {
+    stroke: rgba(148, 163, 184, 0.25);
+  }
+  .grid line {
+    stroke: rgba(148, 163, 184, 0.1);
+  }
+  .tip-date {
+    fill: #94a3b8;
+    font-size: 0.62rem;
+  }
+  .tip-value {
+    fill: #e2e8f0;
+    font-size: 0.74rem;
+    font-weight: 700;
+  }
+}
