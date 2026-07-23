@@ -1,67 +1,173 @@
 <div class="plan-page">
 
-    <!-- month navigation -->
-    <div class="month-bar">
-        <button class="month-btn" (click)="changeMonth(-1)">‹</button>
-        <span class="month-label">{{ monthLabel() }}</span>
-        <button class="month-btn" (click)="changeMonth(1)">›</button>
-    </div>
-
-    <!-- overall summary -->
-    <div class="totals-card">
-        <div class="total">
-            <span class="total-label">Spent</span>
-            <span class="total-value spent">${{ totalSpent() | number:'1.0-0' }}</span>
-        </div>
-        <div class="total">
-            <span class="total-label">Budgeted</span>
-            <span class="total-value">${{ totalBudget() | number:'1.0-0' }}</span>
-        </div>
-        <div class="total">
-            <span class="total-label">Remaining</span>
-            <span class="total-value"
-                  [class.spent]="totalBudget() - totalSpent() < 0"
-                  [class.remaining]="totalBudget() - totalSpent() >= 0">
-                ${{ totalBudget() - totalSpent() | number:'1.0-0' }}
-            </span>
-        </div>
-    </div>
-
-    <!-- per-category budgets -->
-    <div class="budget-list">
-        @for (b of budgets(); track b.categoryId) {
-            <div class="budget-item">
-                <div class="budget-top">
-                    <span class="budget-name">{{ b.category }}</span>
-
-                    @if (editingId() === b.categoryId) {
-                        <span class="edit-controls">
-                            <input class="limit-input" type="number" inputmode="decimal"
-                                   min="0" step="10" placeholder="0"
-                                   [ngModel]="draftLimit()" (ngModelChange)="draftLimit.set($event)" />
-                            <button class="mini-btn save" (click)="saveEdit(b)">✓</button>
-                            <button class="mini-btn" (click)="cancelEdit()">✕</button>
-                        </span>
-                    } @else {
-                        <button class="budget-amounts" (click)="startEdit(b)">
-                            ${{ b.spent | number:'1.0-0' }}
-                            <span class="of">/</span>
-                            @if (b.monthlyLimit > 0) {
-                                ${{ b.monthlyLimit | number:'1.0-0' }}
-                            } @else {
-                                <span class="set-budget">set budget</span>
-                            }
-                        </button>
-                    }
-                </div>
-
-                <div class="bar-track">
-                    <div class="bar-fill" [class]="'bar-fill ' + barClass(b)"
-                         [style.width.%]="percent(b)"></div>
-                </div>
-            </div>
-        } @empty {
-            <p class="plan-empty">Loading budgets…</p>
+    <div class="tab-bar">
+        @for (tab of planningTabs; track tab.key) {
+            <button class="tab" [class.active]="activeTab() === tab.key" (click)="setTab(tab.key)">
+                {{ tab.label }}
+            </button>
         }
     </div>
+
+    @if (activeTab() === 'budgets') {
+        <!-- month navigation -->
+        <div class="month-bar">
+            <button class="month-btn" (click)="changeMonth(-1)">‹</button>
+            <span class="month-label">{{ monthLabel() }}</span>
+            <button class="month-btn" (click)="changeMonth(1)">›</button>
+        </div>
+
+        <!-- overall summary -->
+        <div class="totals-card">
+            <div class="total">
+                <span class="total-label">Spent</span>
+                <span class="total-value spent">${{ totalSpent() | number:'1.0-0' }}</span>
+            </div>
+            <div class="total">
+                <span class="total-label">Budgeted</span>
+                <span class="total-value">${{ totalBudget() | number:'1.0-0' }}</span>
+            </div>
+            <div class="total">
+                <span class="total-label">Remaining</span>
+                <span class="total-value"
+                      [class.spent]="totalBudget() - totalSpent() < 0"
+                      [class.remaining]="totalBudget() - totalSpent() >= 0">
+                    ${{ totalBudget() - totalSpent() | number:'1.0-0' }}
+                </span>
+            </div>
+        </div>
+
+        <!-- per-category budgets -->
+        <div class="budget-list">
+            @for (b of budgets(); track b.categoryId) {
+                <div class="budget-item">
+                    <div class="budget-top">
+                        <span class="budget-name">{{ b.category }}</span>
+
+                        @if (editingId() === b.categoryId) {
+                            <span class="edit-controls">
+                                <input class="limit-input" type="number" inputmode="decimal"
+                                       min="0" step="10" placeholder="0"
+                                       [ngModel]="draftLimit()" (ngModelChange)="draftLimit.set($event)" />
+                                <button class="mini-btn save" (click)="saveEdit(b)">✓</button>
+                                <button class="mini-btn" (click)="cancelEdit()">✕</button>
+                            </span>
+                        } @else {
+                            <button class="budget-amounts" (click)="startEdit(b)">
+                                ${{ b.spent | number:'1.0-0' }}
+                                <span class="of">/</span>
+                                @if (b.monthlyLimit > 0) {
+                                    ${{ b.monthlyLimit | number:'1.0-0' }}
+                                } @else {
+                                    <span class="set-budget">set budget</span>
+                                }
+                            </button>
+                        }
+                    </div>
+
+                    <div class="bar-track">
+                        <div class="bar-fill" [class]="'bar-fill ' + barClass(b)"
+                             [style.width.%]="percent(b)"></div>
+                    </div>
+                </div>
+            } @empty {
+                <p class="plan-empty">Loading budgets…</p>
+            }
+        </div>
+    }
+
+    @if (activeTab() === 'recurring') {
+        <div class="recurring-view">
+            @let summary = recurringSummary();
+            <div class="summary-card">
+                <div class="main-stat">
+                    <span class="label">Monthly Commitment</span>
+                    <span class="value">${{ summary.totalMonthlyCommitment | number:'1.0-0' }}</span>
+                </div>
+                <div class="sub-stats">
+                    <span class="sub-stat">{{ summary.activeCount }} active subscriptions</span>
+                    <span class="sub-stat yearly">≈ ${{ summary.totalMonthlyCommitment * 12 | number:'1.0-0' }}/year</span>
+                </div>
+            </div>
+
+            <div class="recurring-list">
+                @for (item of activeRecurring(); track item.description) {
+                    <div class="recurring-row" [class.expanded]="expandedRecurring() === item.description">
+                        <div class="row-main" (click)="toggleExpand(item.description)">
+                            <div class="row-left">
+                                <app-category-icon [name]="item.category" [size]="20"></app-category-icon>
+                                <div class="info">
+                                    <div class="desc-row">
+                                        <span class="description">{{ item.description }}</span>
+                                        @if (item.priceIncreased) {
+                                            <span class="price-badge">↑ price rose</span>
+                                        }
+                                    </div>
+                                    <div class="meta">
+                                        <span class="cadence">{{ item.cadence }}</span>
+                                        @if (item.nextExpected) {
+                                            <span class="next-date">next ~ {{ item.nextExpected | date:'d MMM' }}</span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-right">
+                                <div class="amount">${{ item.typicalAmount | number:'1.0-2' }}</div>
+                                @if (item.priceIncreased) {
+                                    <div class="price-change">${{ item.typicalAmount | number:'1.0-2' }} → ${{ item.lastAmount | number:'1.0-2' }}</div>
+                                }
+                            </div>
+                        </div>
+
+                        @if (expandedRecurring() === item.description) {
+                            <div class="row-details">
+                                <div class="stats-grid">
+                                    <div class="stat">
+                                        <span class="s-label">First seen</span>
+                                        <span class="s-value">{{ item.firstSeen | date:'MMM yyyy' }}</span>
+                                    </div>
+                                    <div class="stat">
+                                        <span class="s-label">Occurrences</span>
+                                        <span class="s-value">{{ item.occurrences }}</span>
+                                    </div>
+                                    <div class="stat">
+                                        <span class="s-label">Median interval</span>
+                                        <span class="s-value">{{ item.medianIntervalDays }} days</span>
+                                    </div>
+                                </div>
+                                <a class="view-tx-link" [routerLink]="['/transactions']" [queryParams]="{ q: item.description }">View transactions</a>
+                            </div>
+                        }
+                    </div>
+                } @empty {
+                    @if (summary.payments.length === 0) {
+                        <p class="plan-empty">Not enough history yet — recurring payments need at least 3 occurrences to detect.</p>
+                    }
+                }
+
+                @if (inactiveRecurring().length > 0) {
+                    <details class="inactive-section">
+                        <summary>Inactive ({{ inactiveRecurring().length }})</summary>
+                        <div class="inactive-list">
+                            @for (item of inactiveRecurring(); track item.description) {
+                                <div class="recurring-row inactive">
+                                    <div class="row-main">
+                                        <div class="row-left">
+                                            <app-category-icon [name]="item.category" [size]="18"></app-category-icon>
+                                            <div class="info">
+                                                <span class="description">{{ item.description }}</span>
+                                                <span class="last-seen">last seen {{ getRelativeTime(item.lastSeen) }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="row-right">
+                                            <div class="amount">${{ item.typicalAmount | number:'1.0-2' }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </details>
+                }
+            </div>
+        </div>
+    }
 </div>

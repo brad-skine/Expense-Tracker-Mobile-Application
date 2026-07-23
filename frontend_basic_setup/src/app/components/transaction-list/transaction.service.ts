@@ -4,11 +4,7 @@ import { BehaviorSubject, Observable, shareReplay, switchMap } from 'rxjs';
 import { TransactionModel } from '../../models/transaction.model';
 import { environment } from 'src/environments/environment';
 
-export interface CategoryModel {
-    id: number;
-    name: string;
-    displayOrder: number;
-}
+import { CategoryModel } from '../../models/category.model';
 
 export interface TransactionUpsert {
     date: string;        // yyyy-MM-dd

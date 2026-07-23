@@ -102,7 +102,10 @@ namespace expense_tracker.Services
         public async Task<IEnumerable<CategoryDto>> GetCategoriesAsync()
         {
             const string sql = """
-                SELECT id AS Id, name AS Name, display_order AS DisplayOrder
+                SELECT id AS Id, name AS Name, display_order AS DisplayOrder,
+                       COALESCE(icon_key, '') AS IconKey,
+                       COALESCE(color_hex, '') AS ColorHex,
+                       (user_id IS NOT NULL) AS IsCustom
                 FROM categories
                 WHERE is_active = TRUE
                 ORDER BY display_order

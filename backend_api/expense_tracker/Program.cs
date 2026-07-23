@@ -31,6 +31,8 @@ builder.Services.AddScoped<expense_tracker.Services.CsvImportService>();
 
 builder.Services.AddScoped<expense_tracker.Services.TransactionCrudService>();
 builder.Services.AddScoped<expense_tracker.Services.BudgetService>();
+builder.Services.AddScoped<expense_tracker.Services.CategoryManagementService>();
+builder.Services.AddScoped<expense_tracker.Services.RecurringPaymentService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 // builder.Services.AddOpenApi();

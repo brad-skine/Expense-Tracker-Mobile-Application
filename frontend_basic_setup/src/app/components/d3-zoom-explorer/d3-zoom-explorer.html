@@ -1,0 +1,39 @@
+<div class="explorer-container">
+    <div class="tier-pill">
+        <strong>{{ currentTier() }}</strong>
+        <span>{{ dateRange() }}</span>
+    </div>
+
+    @if (showTop500Hint()) {
+        <div class="top-500-hint">Showing top 500 — zoom in further</div>
+    }
+
+    <div class="chart-host" #chartHost></div>
+
+    @if (selectedTransaction(); as tx) {
+        <div class="detail-card">
+            <div class="card-header">
+                <span class="desc">{{ tx.description }}</span>
+                <button class="close-btn" (click)="selectedTransaction.set(null)">✕</button>
+            </div>
+            <div class="card-body">
+                <span class="date">{{ tx.date | date:'mediumDate' }}</span>
+                <span class="amount">${{ Math.abs(tx.amount) | number:'1.2-2' }}</span>
+            </div>
+            <div class="card-footer">
+                <div class="cat-chip">
+                    <app-category-icon [name]="tx.category" [size]="14"></app-category-icon>
+                    <span>{{ tx.category }}</span>
+                </div>
+                <button class="edit-btn" (click)="editTransaction(tx)">Change category</button>
+            </div>
+        </div>
+    }
+</div>
+
+@if (editingTransaction(); as tx) {
+    <app-transaction-form 
+        [transaction]="tx" 
+        (closed)="editingTransaction.set(null)"
+    ></app-transaction-form>
+}

@@ -5,8 +5,9 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { TransactionModel } from '../../models/transaction.model';
 import { CategorySummaryService } from '../type_pie_chart/category_summary.service';
 import { RefreshService } from '../../data/refresh-service';
-import {CategoryModel, TransactionService} from "../transaction-list/transaction.service";
+import {TransactionService} from "../transaction-list/transaction.service";
 import {Observable} from "rxjs";
+import {CategoryModel} from "../../models/category.model";
 
 @Component({
     selector: 'app-transaction-form',

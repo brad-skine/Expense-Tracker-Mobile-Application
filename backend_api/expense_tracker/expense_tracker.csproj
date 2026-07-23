@@ -21,4 +21,8 @@
     <Folder Include="Utils\Parsers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include=".junie\guidelines.md" />
+  </ItemGroup>
+
 </Project>

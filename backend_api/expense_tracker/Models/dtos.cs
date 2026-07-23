@@ -10,6 +10,5 @@
     
     public record CategorySummaryDto(string Category, decimal Total);
  
-    public record CategoryDto(int Id, string Name, int DisplayOrder);
 }
 

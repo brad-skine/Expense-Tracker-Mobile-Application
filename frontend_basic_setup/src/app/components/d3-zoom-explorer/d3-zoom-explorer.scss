@@ -1,0 +1,173 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.explorer-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  padding: 0.6rem 1rem 0.75rem;
+  overflow: hidden;
+}
+
+.chart-host {
+  flex: 1;
+  min-height: 260px;
+  width: 100%;
+  position: relative;
+  touch-action: none;
+}
+
+// Axis styling
+:host ::ng-deep {
+  .x-axis text, .y-axis text {
+    fill: #64748b;
+    font-size: 0.62rem;
+  }
+  .x-axis path, .y-axis path,
+  .x-axis line, .y-axis line {
+    stroke: rgba(148, 163, 184, 0.25);
+  }
+  .grid line {
+    stroke: rgba(148, 163, 184, 0.1);
+  }
+}
+
+// Zoom Tier Pill
+.tier-pill {
+  position: absolute;
+  top: 0.75rem;
+  right: 1rem;
+  padding: 0.25rem 0.6rem;
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  font-size: 0.65rem;
+  color: #94a3b8;
+  pointer-events: none;
+  z-index: 10;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+
+  strong {
+    color: #cbd5f5;
+    text-transform: capitalize;
+  }
+}
+
+// Detail Card
+.detail-card {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  right: 1rem;
+  background: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  animation: slideUp 0.2s ease-out;
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    .desc {
+      font-weight: 600;
+      color: #f1f5f9;
+      font-size: 0.95rem;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: #64748b;
+      padding: 0.25rem;
+      cursor: pointer;
+    }
+  }
+
+  .card-body {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .date {
+      font-size: 0.75rem;
+      color: #94a3b8;
+    }
+
+    .amount {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: #f87171; // Expense color
+    }
+  }
+
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding-top: 0.75rem;
+
+    .cat-chip {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.25rem 0.6rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      font-size: 0.7rem;
+      color: #cbd5f5;
+    }
+
+    .edit-btn {
+      background: #334155;
+      color: #f1f5f9;
+      border: none;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      cursor: pointer;
+
+      &:active {
+        background: #475569;
+      }
+    }
+  }
+}
+
+.top-500-hint {
+  position: absolute;
+  top: 3rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(251, 191, 36, 0.1);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  color: #fbbf24;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.6rem;
+  pointer-events: none;
+  z-index: 5;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}

@@ -153,6 +153,36 @@ namespace expense_tracker.Services
             return typeUpdates + await conn.ExecuteAsync(sql, new { UserId = userId });
         }
 
+        /// <summary>
+        /// Classify many transactions in memory with a constant number of DB round trips.
+        /// Loads user and global rule sets once, then matches every row.
+        /// </summary>
+        public async Task ClassifyManyAsync(IEnumerable<Models.Transaction> rows, Guid userId)
+        {
+            var userRules = await GetUserRulesAsync(userId);
+            var globalRules = await GetGlobalRulesAsync();
+
+            foreach (var txn in rows)
+            {
+                if (txn.TransactionType.Equals("Fee", StringComparison.OrdinalIgnoreCase))
+                {
+                    txn.Category = "Fees";
+                    continue;
+                }
+
+                if (txn.TransactionType.Equals("Deposit", StringComparison.OrdinalIgnoreCase) && txn.Amount > 0)
+                {
+                    txn.Category = "Income";
+                    continue;
+                }
+
+                var match = MatchAgainstRules(txn.Description, userRules)
+                         ?? MatchAgainstRules(txn.Description, globalRules)
+                         ?? "Other";
+                txn.Category = match;
+            }
+        }
+
         // Internal DTOs
         private record MerchantRule(
             string Pattern,

@@ -20,10 +20,13 @@ namespace expense_tracker.Controllers
 
         }
 
-        public QuerysController(Services.TransactionQueryService transactionQueryService, CategoryClassifierService classifier)
+        private readonly Services.RecurringPaymentService _recurring;
+
+        public QuerysController(Services.TransactionQueryService transactionQueryService, CategoryClassifierService classifier, Services.RecurringPaymentService recurring)
         {
             _service = transactionQueryService;
             _classifier = classifier;
+            _recurring = recurring;
         }
 
 
@@ -78,6 +81,13 @@ namespace expense_tracker.Controllers
         {
             var updated = await _classifier.ReclassifyAsync(GetUserId(), force);
             return Ok(new { message = "Reclassification complete", updated });
+        }
+
+        [HttpGet("recurring")]
+        public async Task<IActionResult> GetRecurringAsync()
+        {
+            var summary = await _recurring.GetRecurringAsync(GetUserId());
+            return Ok(summary);
         }
     }
 }
