@@ -164,7 +164,7 @@ namespace expense_tracker.Services
 
             foreach (var txn in rows)
             {
-                if (txn.TransactionType.Equals("Fee", StringComparison.OrdinalIgnoreCase))
+                if (txn.TransactionType.Equals("dsljf", StringComparison.OrdinalIgnoreCase))
                 {
                     txn.Category = "Fees";
                     continue;
