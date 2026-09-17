@@ -5,7 +5,9 @@
 // using Microsoft.Extensions.Hosting;
 // using Dapper;
 using System.Security.Cryptography;
+using expense_tracker.Models;
 using expense_tracker.Services;
+using expense_tracker.Services.Akahu;
 using expense_tracker.Services.Interfaces;
 using expense_tracker.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -33,6 +35,7 @@ builder.Services.AddScoped<expense_tracker.Services.TransactionCrudService>();
 builder.Services.AddScoped<expense_tracker.Services.BudgetService>();
 builder.Services.AddScoped<expense_tracker.Services.CategoryManagementService>();
 builder.Services.AddScoped<expense_tracker.Services.RecurringPaymentService>();
+builder.Services.AddHttpClient<AkahuClient>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 // builder.Services.AddOpenApi();
@@ -66,6 +69,14 @@ builder.Services.AddCors(options =>
 
 var publicKeyPem = Environment.GetEnvironmentVariable("JWT_PUBLIC_KEY")
     ?? File.ReadAllText("Utils/Keys/jwt_public.pem"); // fallback for local dev
+
+// Akahu: bind section (user-secrets in local dev), env vars win when set
+builder.Services.Configure<AkahuOptions>(builder.Configuration.GetSection("Akahu"));
+builder.Services.PostConfigure<AkahuOptions>(options =>
+{
+    options.AppToken  = Environment.GetEnvironmentVariable("AKAHU_APP_TOKEN")  ?? options.AppToken;
+    options.UserToken = Environment.GetEnvironmentVariable("AKAHU_USER_TOKEN") ?? options.UserToken;
+});
 
 var rsa = RSA.Create();
 rsa.ImportFromPem(publicKeyPem);
