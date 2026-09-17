@@ -36,6 +36,7 @@ builder.Services.AddScoped<expense_tracker.Services.BudgetService>();
 builder.Services.AddScoped<expense_tracker.Services.CategoryManagementService>();
 builder.Services.AddScoped<expense_tracker.Services.RecurringPaymentService>();
 builder.Services.AddHttpClient<AkahuClient>();
+builder.Services.AddScoped<AkahuSyncService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 // builder.Services.AddOpenApi();

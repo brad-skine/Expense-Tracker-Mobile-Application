@@ -8,10 +8,30 @@ namespace expense_tracker.Controllers
     [Authorize]
     [ApiController]
     [Route("api/bank-connections")]
-    public class BankConnectionsController(AkahuClient akahu) : ControllerBase
+    public class BankConnectionsController(AkahuClient akahu, AkahuSyncService sync) : ControllerBase
     {
         private Guid GetUserId() =>
             Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        // GET api/bank-connections
+        [HttpGet]
+        public async Task<IActionResult> List() =>
+            Ok(await sync.GetConnectionsAsync(GetUserId()));
+
+        // POST api/bank-connections/sync-accounts
+        [HttpPost("sync-accounts")]
+        public async Task<IActionResult> SyncAccounts(CancellationToken ct)
+        {
+            try
+            {
+                var count = await sync.SyncAccountsAsync(GetUserId(), ct);
+                return Ok(new { synced = count });
+            }
+            catch (HttpRequestException ex)
+            {
+                return StatusCode(502, new { ok = false, message = ex.Message });
+            }
+        }
 
         // Smoke test: proves the Akahu tokens work. Remove or lock down later.
         [HttpGet("test")]
