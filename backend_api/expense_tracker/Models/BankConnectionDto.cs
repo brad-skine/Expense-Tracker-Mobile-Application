@@ -12,3 +12,15 @@ public record BankConnectionDto(
     decimal? AvailableBalance,
     bool IsActive,
     DateTime? LastSyncedAt);
+
+public record AccountSyncResultDto(
+    int ConnectionId,
+    string ExternalAccountId,
+    string? Name,
+    int Fetched,
+    int Inserted);
+
+public record TransactionSyncResultDto(
+    int Fetched,
+    int Inserted,
+    List<AccountSyncResultDto> PerAccount);

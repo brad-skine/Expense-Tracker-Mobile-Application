@@ -50,7 +50,7 @@ namespace expense_tracker.Services
                         (user_id, transaction_date, transaction_type, description, amount, balance, category)
                     VALUES
                         (@UserId, @date, @transaction_type, @description, @amount, @balance, @category)
-                    ON CONFLICT (user_id, transaction_date, amount, balance)
+                    ON CONFLICT (user_id, transaction_date, amount, balance) WHERE external_id IS NULL
                     DO NOTHING;
                     """,
                     connection

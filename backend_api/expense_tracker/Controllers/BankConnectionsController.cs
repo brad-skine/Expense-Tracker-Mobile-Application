@@ -33,6 +33,23 @@ namespace expense_tracker.Controllers
             }
         }
 
+        // POST api/bank-connections/sync-transactions?since=2026-06-01
+        [HttpPost("sync-transactions")]
+        public async Task<IActionResult> SyncTransactions([FromQuery] DateTime? since, CancellationToken ct)
+        {
+            if (since.HasValue && since.Value.Kind == DateTimeKind.Unspecified)
+                since = DateTime.SpecifyKind(since.Value, DateTimeKind.Utc);
+
+            try
+            {
+                return Ok(await sync.SyncTransactionsAsync(GetUserId(), since?.ToUniversalTime(), ct));
+            }
+            catch (HttpRequestException ex)
+            {
+                return StatusCode(502, new { ok = false, message = ex.Message });
+            }
+        }
+
         // Smoke test: proves the Akahu tokens work. Remove or lock down later.
         [HttpGet("test")]
         public async Task<IActionResult> Test(CancellationToken ct)
