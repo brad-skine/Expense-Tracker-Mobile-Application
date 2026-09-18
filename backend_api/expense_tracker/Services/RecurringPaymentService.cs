@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using expense_tracker.Models;
 using expense_tracker.Utils;
 
@@ -6,16 +6,17 @@ namespace expense_tracker.Services
 {
     public class RecurringPaymentService(DbConnectionFactory db)
     {
-        public async Task<RecurringSummaryDto> GetRecurringAsync(Guid userId)
+        public async Task<RecurringSummaryDto> GetRecurringAsync(Guid userId, IReadOnlyCollection<int>? accountIds = null)
         {
-            const string sql = """
+            var (filter, ids) = SqlFilters.AccountFilter(accountIds);
+            var sql = $$"""
                 WITH keyed AS (
                     SELECT transaction_date, description, category, ABS(amount) AS amt,
                            BTRIM(REGEXP_REPLACE(BTRIM(REGEXP_REPLACE(
                                REGEXP_REPLACE(UPPER(description), '[0-9]{3,}', ' ', 'g'),
                                '[^A-Z ]', ' ', 'g')), '\s+', ' ', 'g')) AS merchant_key
                     FROM transactions
-                    WHERE user_id = @UserId AND amount < 0
+                    WHERE user_id = @UserId AND amount < 0{{filter}}
                 ),
                 daily AS (
                     SELECT merchant_key, transaction_date,
@@ -54,7 +55,7 @@ namespace expense_tracker.Services
                 """;
 
             await using var conn = db.CreateConnection();
-            var rows = await conn.QueryAsync<RawRecurringRow>(sql, new { UserId = userId });
+            var rows = await conn.QueryAsync<RawRecurringRow>(sql, new { UserId = userId, AccountIds = ids });
 
             var today = DateOnly.FromDateTime(DateTime.UtcNow);
 

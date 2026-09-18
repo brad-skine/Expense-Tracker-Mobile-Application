@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -31,39 +31,39 @@ namespace expense_tracker.Controllers
 
 
         [HttpGet("all")]
-        public async Task<IActionResult> GetAllTransactionsAsync()
+        public async Task<IActionResult> GetAllTransactionsAsync([FromQuery] int[]? accountIds = null)
         {
-            var transactions = await _service.GetAllTransactionsAsync(GetUserId());
+            var transactions = await _service.GetAllTransactionsAsync(GetUserId(), accountIds);
           
             return Ok(transactions);
         }
 
         [HttpGet("summary/monthly")]
-        public async Task<IActionResult> GetMonthlySummaryAsync()
+        public async Task<IActionResult> GetMonthlySummaryAsync([FromQuery] int[]? accountIds = null)
         {
-            var summary = await _service.GetMonthlySummaryAsync(GetUserId());
+            var summary = await _service.GetMonthlySummaryAsync(GetUserId(), accountIds);
             return Ok(summary);
         }
 
         [HttpGet("summary/yearly")]
-        public async Task<IActionResult> GetYearlySummaryAsync()
+        public async Task<IActionResult> GetYearlySummaryAsync([FromQuery] int[]? accountIds = null)
         {
-            var summary = await _service.GetYearlySummaryAsync(GetUserId());
+            var summary = await _service.GetYearlySummaryAsync(GetUserId(), accountIds);
             return Ok(summary);
         }
 
         [HttpGet("summary/type")]
-        public async Task<IActionResult> GetTypeSummaryAsync()
+        public async Task<IActionResult> GetTypeSummaryAsync([FromQuery] int[]? accountIds = null)
         {
-            var summary = await _service.GetTypeSummaryAsync(GetUserId());
+            var summary = await _service.GetTypeSummaryAsync(GetUserId(), accountIds);
             return Ok(summary);
         }
 
         // NEW: Category-based spending summary
         [HttpGet("summary/category")]
-        public async Task<IActionResult> GetCategorySummaryAsync()
+        public async Task<IActionResult> GetCategorySummaryAsync([FromQuery] int[]? accountIds = null)
         {
-            var summary = await _service.GetCategorySummaryAsync(GetUserId());
+            var summary = await _service.GetCategorySummaryAsync(GetUserId(), accountIds);
             return Ok(summary);
         }
  
@@ -84,9 +84,9 @@ namespace expense_tracker.Controllers
         }
 
         [HttpGet("recurring")]
-        public async Task<IActionResult> GetRecurringAsync()
+        public async Task<IActionResult> GetRecurringAsync([FromQuery] int[]? accountIds = null)
         {
-            var summary = await _recurring.GetRecurringAsync(GetUserId());
+            var summary = await _recurring.GetRecurringAsync(GetUserId(), accountIds);
             return Ok(summary);
         }
     }
